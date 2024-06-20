@@ -81,7 +81,7 @@ ItemCmd:
   "399:0:1:6:nbt=nbt5": [ form show 其他 ]
 
 ```
-blockConfig.yml
+nbts.json
 ```json
 {
 
