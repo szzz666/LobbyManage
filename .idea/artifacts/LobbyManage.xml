@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="LobbyManage">
+    <output-path>$PROJECT_DIR$/server/plugins</output-path>
+    <root id="archive" name="LobbyManage.jar">
+      <element id="module-output" name="LobbyManage" />
+    </root>
+  </artifact>
+</component>
