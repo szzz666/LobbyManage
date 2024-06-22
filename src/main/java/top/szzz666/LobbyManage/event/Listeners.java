@@ -58,7 +58,7 @@ public class Listeners implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (VoidTp) {
-            if (player.getLocation().getY() < 0) {
+            if (player.getLocation().getY() < 0 && player.getLevel().equals(getLobbyLevel())) {
                 player.teleport(getLobbySpawn());
             }
         }
