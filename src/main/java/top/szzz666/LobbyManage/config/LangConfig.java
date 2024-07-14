@@ -20,10 +20,6 @@ public class LangConfig {
    public static String Form0_Element4;
    public static String Form0_Element5;
    public static String Form0_Element6;
-   public static String Form0_Element20;
-   public static String Form0_Element21;
-   public static String Form0_Element22;
-   public static String Form0_Element23;
    public static String Form0_Element7;
    public static String Form0_Element8;
    public static String Form0_Element9;
@@ -37,6 +33,14 @@ public class LangConfig {
    public static String Form0_Element17;
    public static String Form0_Element18;
    public static String Form0_Element19;
+   public static String Form0_Element20;
+   public static String Form0_Element21;
+   public static String Form0_Element22;
+   public static String Form0_Element23;
+   public static String Form0_Element24;
+   public static String Form0_Element25;
+   public static String Form0_Element26;
+   public static String Form0_Element27;
    public static String Form0_sendMessage;
 
    public static boolean loadLangConfig() {
@@ -59,14 +63,10 @@ public class LangConfig {
       Form0_Element4 = LangConfig.getString("Form0_Element4");
       Form0_Element5 = LangConfig.getString("Form0_Element5");
       Form0_Element6 = LangConfig.getString("Form0_Element6");
-      Form0_Element20 = LangConfig.getString("Form0_Element20");
-      Form0_Element21 = LangConfig.getString("Form0_Element21");
-      Form0_Element22 = LangConfig.getString("Form0_Element22");
       Form0_Element7 = LangConfig.getString("Form0_Element7");
       Form0_Element8 = LangConfig.getString("Form0_Element8");
       Form0_Element9 = LangConfig.getString("Form0_Element9");
       Form0_Element10 = LangConfig.getString("Form0_Element10");
-      Form0_Element23=LangConfig.getString("Form0_Element23");
       Form0_Element11 = LangConfig.getString("Form0_Element11");
       Form0_Element12 = LangConfig.getString("Form0_Element12");
       Form0_Element13 = LangConfig.getString("Form0_Element13");
@@ -76,6 +76,14 @@ public class LangConfig {
       Form0_Element17 = LangConfig.getString("Form0_Element17");
       Form0_Element18 = LangConfig.getString("Form0_Element18");
       Form0_Element19 = LangConfig.getString("Form0_Element19");
+      Form0_Element20 = LangConfig.getString("Form0_Element20");
+      Form0_Element21 = LangConfig.getString("Form0_Element21");
+      Form0_Element22 = LangConfig.getString("Form0_Element22");
+      Form0_Element23=LangConfig.getString("Form0_Element23");
+      Form0_Element24=LangConfig.getString("Form0_Element24");
+      Form0_Element25=LangConfig.getString("Form0_Element25");
+      Form0_Element26=LangConfig.getString("Form0_Element26");
+      Form0_Element27=LangConfig.getString("Form0_Element27");
       Form0_sendMessage = LangConfig.getString("Form0_sendMessage");
       LangConfig.save();
       return true;

@@ -21,6 +21,7 @@ import java.util.*;
 import static java.util.TimeZone.getTimeZone;
 import static top.szzz666.LobbyManage.LobbyManageMain.nkServer;
 import static top.szzz666.LobbyManage.LobbyManageMain.plugin;
+import static top.szzz666.LobbyManage.config.LmConfig.TaskDelay;
 import static top.szzz666.LobbyManage.config.LmConfig.TimeSync;
 
 public class pluginUtil {
@@ -117,33 +118,26 @@ public class pluginUtil {
     }
 
     public static void setupTime() {
-        if (LmConfig.FixedTime > 0 && !TimeSync) {
             nkServer.getScheduler().scheduleRepeatingTask(plugin, new Task() {
                 public void onRun(int currentTick) {
-                    for (Level l : nkServer.getLevels().values()) {
-                        l.setTime(LmConfig.FixedTime);
+                    if(TimeSync){
+                        SunriseSunsetRequestObject sunriseSunset = null;
+                        try {
+                            sunriseSunset = new SunriseSunsetRequestObject(getTimeZone(LmConfig.TimeZone), LmConfig.Latitude, LmConfig.Longitude);
+                        } catch (IOException | ConfigurationException e) {
+                            throw new RuntimeException(e);
+                        }
+                        int time =calculateWorldTime(Calendar.getInstance(getTimeZone(LmConfig.TimeZone)), sunriseSunset.getSunriseTime(), sunriseSunset.getSunsetTime());
+                        for (Level world : nkServer.getLevels().values()) {
+                            world.setTime(time);
+                        }
+                    }else if (LmConfig.FixedTime > 0 ) {
+                        for (Level l : nkServer.getLevels().values()) {
+                            l.setTime(LmConfig.FixedTime);
+                        }
                     }
                 }
-            }, 1200);
-        }
-        if(TimeSync) {
-            nkServer.getScheduler().scheduleRepeatingTask(plugin, new Task() {
-                @Override
-                public void onRun(int i) {
-                    SunriseSunsetRequestObject sunriseSunset = null;
-                    try {
-                        sunriseSunset = new SunriseSunsetRequestObject(getTimeZone(LmConfig.TimeZone), LmConfig.Latitude, LmConfig.Longitude);
-                    } catch (IOException | ConfigurationException e) {
-                        throw new RuntimeException(e);
-                    }
-                    int time =calculateWorldTime(Calendar.getInstance(getTimeZone(LmConfig.TimeZone)), sunriseSunset.getSunriseTime(), sunriseSunset.getSunsetTime());
-                    for (Level world : nkServer.getLevels().values()) {
-                        world.setTime(time);
-                    }
-                    nkConsole(String.valueOf(time));
-                }
-            }, 100);
-        }
+            }, TaskDelay);
     }
 
     private static int calculateWorldTime(Calendar cal, String sunriseTime, String sunsetTime) {

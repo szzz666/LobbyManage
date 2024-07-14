@@ -37,6 +37,7 @@ public class LmConfig {
     public static String TimeZone;
     public static String Latitude;
     public static String Longitude;
+    public static int TaskDelay;
     public static boolean DisableHunger;
     public static boolean DisableDamage;
     public static boolean DisablePlace;
@@ -71,6 +72,7 @@ public class LmConfig {
         TimeZone= config.getString("RealTime.TimeZone");
         Latitude= config.getString("RealTime.Latitude");
         Longitude= config.getString("RealTime.Longitude");
+        TaskDelay=config.getInt("TaskDelay");
         DisableWeather = config.getBoolean("DisableWeather");
         DisableHunger = config.getBoolean("DisableHunger");
         DisableDamage = config.getBoolean("DisableDamage");
@@ -79,7 +81,7 @@ public class LmConfig {
         DisableInteract = config.getBoolean("DisableInteract");
         DisableBlockUpdate = config.getBoolean("DisableBlockUpdate");
         DisableItemDrop = config.getBoolean("DisableItemDrop");
-        ItemCmdStr = (HashMap) config.get("ItemCmd");
+        ItemCmdStr = (HashMap<String, ArrayList<String>>) config.get("ItemCmd");
         config.save();
         return true;
     }
@@ -105,6 +107,7 @@ public class LmConfig {
         config.set("RealTime.TimeZone", TimeZone);
         config.set("RealTime.Latitude", Latitude);
         config.set("RealTime.Longitude", Longitude);
+        config.set("TaskDelay",TaskDelay);
         config.set("DisableWeather", DisableWeather);
         config.set("DisableHunger", DisableHunger);
         config.set("DisableDamage", DisableDamage);

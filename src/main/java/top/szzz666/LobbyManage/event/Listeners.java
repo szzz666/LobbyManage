@@ -52,8 +52,6 @@ public class Listeners implements Listener {
         }
 
         if (!LmConfig.JoinPlayerCmd.isEmpty()) {
-
-
             for (String cmd : LmConfig.JoinPlayerCmd) {
                 if (cmd.startsWith("op#")) {
                     cmd = cmd.replace("op#", "");
