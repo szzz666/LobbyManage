@@ -59,6 +59,7 @@ public class LmForm {
         form.addElement(new ElementToggle(LangConfig.Form0_Element20, LmConfig.QuitClear));
         form.addElement(new ElementInput(LangConfig.Form0_Element21, LmConfig.QuitMsg,LmConfig.QuitMsg));
         form.addElement(new ElementInput(LangConfig.Form0_Element22, LmConfig.QuitTitle, LmConfig.QuitTitle));
+        form.addElement(new ElementToggle(LangConfig.Form0_Element23, LmConfig.TimeSync));
         form.addHandler(FormResponseHandler.withoutPlayer((ignored) -> {
             if (!form.wasClosed()) {
                 String Language = form.getResponse().getInputResponse(0);
@@ -73,10 +74,11 @@ public class LmForm {
                 String QuitTitle = form.getResponse().getInputResponse(22);
                 String JoinMsg = form.getResponse().getInputResponse(7);
                 String JoinTitle = form.getResponse().getInputResponse(8);
-                ArrayList<String> JoinConsoleCmd = new ArrayList(Arrays.asList(form.getResponse().getInputResponse(9).split(", ")));
-                ArrayList<String> JoinPlayerCmd = new ArrayList(Arrays.asList(form.getResponse().getInputResponse(10).split(", ")));
+                ArrayList<String> JoinConsoleCmd = new ArrayList<>(Arrays.asList(form.getResponse().getInputResponse(9).split(", ")));
+                ArrayList<String> JoinPlayerCmd = new ArrayList<>(Arrays.asList(form.getResponse().getInputResponse(10).split(", ")));
                 String FixedTime = form.getResponse().getInputResponse(11);
                 boolean DisableWeather = form.getResponse().getToggleResponse(12);
+                boolean TimeSync = form.getResponse().getToggleResponse(23);
                 boolean DisableHunger = form.getResponse().getToggleResponse(13);
                 boolean DisableDamage = form.getResponse().getToggleResponse(14);
                 boolean DisablePlace = form.getResponse().getToggleResponse(15);
@@ -99,6 +101,7 @@ public class LmForm {
                 LmConfig.JoinConsoleCmd = JoinConsoleCmd;
                 LmConfig.JoinPlayerCmd = JoinPlayerCmd;
                 LmConfig.FixedTime = Integer.parseInt(FixedTime);
+                LmConfig.TimeSync=TimeSync;
                 LmConfig.DisableWeather = DisableWeather;
                 LmConfig.DisableHunger = DisableHunger;
                 LmConfig.DisableDamage = DisableDamage;

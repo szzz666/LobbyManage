@@ -19,8 +19,7 @@ VoidTp: true
 # 进服回城
 JoinTp: true
 
-# 退出清除玩家数据(推荐小游戏服务器开启)
-# 经济API需要检测玩家是否有数据
+# 退出后清除玩家数据(推荐小游戏服务器开启)
 QuitClear: true
 
 # 设置玩家加入游戏时显示的消息。(为空不启用)
@@ -42,13 +41,26 @@ JoinPlayerCmd:
   - "say hello"
   - "say hello2"
 
-# 固定世界间隔(为-1不启用)
+#现实时间
+RealTime:
+  # 同步现实时间
+  TimeSync: true
+  # TimeZone
+  TimeZone: "Asia/Shanghai"
+  # 经度
+  Latitude: "121.442254"
+  # 维度
+  Longitude: "31.290135"
+
+# 固定服务器时间(为-1不启用)
+# 如果启用同步现实时间,会自动关闭此功能
 FixedTime: 6000
 
 # 禁止天气变化。
 DisableWeather: true
 
 # 禁止饥饿度减少。
+
 DisableHunger: true
 
 # 禁止玩家受到伤害。

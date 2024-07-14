@@ -31,8 +31,12 @@ public class LmConfig {
     public static String QuitTitle;
     public static List<String> JoinConsoleCmd;
     public static List<String> JoinPlayerCmd;
-    public static int FixedTime;
     public static boolean DisableWeather;
+    public static int FixedTime;
+    public static boolean TimeSync;
+    public static String TimeZone;
+    public static String Latitude;
+    public static String Longitude;
     public static boolean DisableHunger;
     public static boolean DisableDamage;
     public static boolean DisablePlace;
@@ -63,6 +67,10 @@ public class LmConfig {
         JoinConsoleCmd = config.getStringList("JoinConsoleCmd");
         JoinPlayerCmd = config.getStringList("JoinPlayerCmd");
         FixedTime = config.getInt("FixedTime");
+        TimeSync = config.getBoolean("RealTime.TimeSync");
+        TimeZone= config.getString("RealTime.TimeZone");
+        Latitude= config.getString("RealTime.Latitude");
+        Longitude= config.getString("RealTime.Longitude");
         DisableWeather = config.getBoolean("DisableWeather");
         DisableHunger = config.getBoolean("DisableHunger");
         DisableDamage = config.getBoolean("DisableDamage");
@@ -93,6 +101,10 @@ public class LmConfig {
         config.set("JoinConsoleCmd", JoinConsoleCmd);
         config.set("JoinPlayerCmd", JoinPlayerCmd);
         config.set("FixedTime", FixedTime);
+        config.set("RealTime.TimeSync", TimeSync);
+        config.set("RealTime.TimeZone", TimeZone);
+        config.set("RealTime.Latitude", Latitude);
+        config.set("RealTime.Longitude", Longitude);
         config.set("DisableWeather", DisableWeather);
         config.set("DisableHunger", DisableHunger);
         config.set("DisableDamage", DisableDamage);

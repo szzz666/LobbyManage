@@ -23,6 +23,7 @@ public class LangConfig {
    public static String Form0_Element20;
    public static String Form0_Element21;
    public static String Form0_Element22;
+   public static String Form0_Element23;
    public static String Form0_Element7;
    public static String Form0_Element8;
    public static String Form0_Element9;
@@ -65,6 +66,7 @@ public class LangConfig {
       Form0_Element8 = LangConfig.getString("Form0_Element8");
       Form0_Element9 = LangConfig.getString("Form0_Element9");
       Form0_Element10 = LangConfig.getString("Form0_Element10");
+      Form0_Element23=LangConfig.getString("Form0_Element23");
       Form0_Element11 = LangConfig.getString("Form0_Element11");
       Form0_Element12 = LangConfig.getString("Form0_Element12");
       Form0_Element13 = LangConfig.getString("Form0_Element13");
