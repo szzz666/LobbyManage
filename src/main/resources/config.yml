@@ -55,8 +55,14 @@ RealTime:
 # 固定服务器时间(为-1不启用)
 # 如果启用同步现实时间,会自动关闭此功能
 FixedTime: 6000
+
 # 时间设置任务的执行间隔
 TaskDelay: 1200
+
+# 效果方块 [EffectId:Tick:Level]
+EffectBlock:
+  "222": "1:60:2"
+
 # 禁止天气变化。
 DisableWeather: true
 
@@ -75,6 +81,9 @@ DisableBreak: true
 
 # 禁止玩家交互。
 DisableInteract: true
+
+# 双跳。
+DoubleJump: true
 
 # 禁止方块更新。
 DisableBlockUpdate: true

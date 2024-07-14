@@ -11,9 +11,11 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.level.WeatherChangeEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.item.Item;
+import cn.nukkit.level.Level;
+import cn.nukkit.level.Sound;
+import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.AsyncTask;
 import top.szzz666.LobbyManage.LobbyManageMain;
-import top.szzz666.LobbyManage.config.LmConfig;
 import top.szzz666.LobbyManage.tools.pluginUtil;
 
 import java.io.File;
@@ -24,35 +26,31 @@ import static top.szzz666.LobbyManage.LobbyManageMain.plugin;
 import static top.szzz666.LobbyManage.config.LmConfig.*;
 
 public class Listeners implements Listener {
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        LmConfig.CommandCoolTick.put(player, LobbyManageMain.nkServer.getTick());
-        if (!LmConfig.ItemCmdStr.isEmpty() & !LmConfig.JoinTp) {
-            pluginUtil.JoinItem(LmConfig.ItemCmdStr, player);
+        CommandCoolTick.put(player, LobbyManageMain.nkServer.getTick());
+        if (!ItemCmdStr.isEmpty() & !JoinTp) {
+            pluginUtil.JoinItem(ItemCmdStr, player);
         }
 
-        player.teleport(LmConfig.getLobbySpawn());
-        if (!LmConfig.JoinMsg.isEmpty()) {
-            event.setJoinMessage(LmConfig.JoinMsg.replace("%player%", player.getName()));
+        player.teleport(getLobbySpawn());
+        if (!JoinMsg.isEmpty()) {
+            event.setJoinMessage(JoinMsg.replace("%player%", player.getName()));
         }
-
-        if (!LmConfig.JoinTitle.isEmpty()) {
+        if (!JoinTitle.isEmpty()) {
             for (Player p : Server.getInstance().getOnlinePlayers().values()) {
-                p.sendTitle(LmConfig.JoinTitle.split("&")[0].replace("%player%", player.getName()), LmConfig.JoinTitle.split("&")[1].replace("%player%", player.getName()), Integer.parseInt(LmConfig.JoinTitle.split("&")[2].split(",")[0]), Integer.parseInt(LmConfig.JoinTitle.split("&")[2].split(",")[1]), Integer.parseInt(LmConfig.JoinTitle.split("&")[2].split(",")[2]));
+                p.sendTitle(JoinTitle.split("&")[0].replace("%player%", player.getName()), JoinTitle.split("&")[1].replace("%player%", player.getName()), Integer.parseInt(JoinTitle.split("&")[2].split(",")[0]), Integer.parseInt(JoinTitle.split("&")[2].split(",")[1]), Integer.parseInt(JoinTitle.split("&")[2].split(",")[2]));
             }
         }
-
-
-        if (!LmConfig.JoinConsoleCmd.isEmpty()) {
-
-            for (String cmd : LmConfig.JoinConsoleCmd) {
+        if (!JoinConsoleCmd.isEmpty()) {
+            for (String cmd : JoinConsoleCmd) {
                 LobbyManageMain.nkServer.dispatchCommand(LobbyManageMain.consoleObjects, cmd.replace("%player%", player.getName()));
             }
         }
-
-        if (!LmConfig.JoinPlayerCmd.isEmpty()) {
-            for (String cmd : LmConfig.JoinPlayerCmd) {
+        if (!JoinPlayerCmd.isEmpty()) {
+            for (String cmd : JoinPlayerCmd) {
                 if (cmd.startsWith("op#")) {
                     cmd = cmd.replace("op#", "");
                     player.setOp(true);
@@ -67,19 +65,32 @@ public class Listeners implements Listener {
     }
 
     @EventHandler
+    public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
+        Player player = event.getPlayer();
+        if (DoubleJump && player.getLevel().equals(getLobbyLevel()) && !player.isCreative()) {
+            event.setCancelled(true);
+            player.setAllowFlight(false);
+            player.setMotion(player.getLocation().getDirectionVector().multiply(2).add(0.0, 0.8, 0.0));
+            Level level = player.getLevel();
+            level.addSound(player.getLocation(), Sound.MOB_ENDERDRAGON_FLAP);
+        }
+    }
+
+
+    @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
 
-        if (!LmConfig.QuitMsg.isEmpty()) {
-            event.setQuitMessage(LmConfig.QuitMsg.replace("%player%", player.getName()));
+        if (!QuitMsg.isEmpty()) {
+            event.setQuitMessage(QuitMsg.replace("%player%", player.getName()));
         }
 
-        if (!LmConfig.QuitTitle.isEmpty()) {
+        if (!QuitTitle.isEmpty()) {
             for (Player p : Server.getInstance().getOnlinePlayers().values()) {
-                p.sendTitle(LmConfig.QuitTitle.split("&")[0].replace("%player%", player.getName()), LmConfig.QuitTitle.split("&")[1].replace("%player%", player.getName()), Integer.parseInt(LmConfig.QuitTitle.split("&")[2].split(",")[0]), Integer.parseInt(LmConfig.QuitTitle.split("&")[2].split(",")[1]), Integer.parseInt(LmConfig.QuitTitle.split("&")[2].split(",")[2]));
+                p.sendTitle(QuitTitle.split("&")[0].replace("%player%", player.getName()), QuitTitle.split("&")[1].replace("%player%", player.getName()), Integer.parseInt(QuitTitle.split("&")[2].split(",")[0]), Integer.parseInt(QuitTitle.split("&")[2].split(",")[1]), Integer.parseInt(QuitTitle.split("&")[2].split(",")[2]));
             }
         }
-        if (LmConfig.QuitClear) {
+        if (QuitClear) {
             File me = new File(plugin.getDataFolder().getParentFile().getParent() + "\\players\\" + player.getUniqueId() + ".dat");
             if (me.exists()) {
                 nkServer.getScheduler().scheduleAsyncTask(plugin, new AsyncTask() {
@@ -96,21 +107,30 @@ public class Listeners implements Listener {
 
             }
         }
-        LmConfig.CommandCoolTick.remove(player);
+        CommandCoolTick.remove(player);
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (LmConfig.VoidTp && player.getLocation().getY() < 0.0 && player.getLevel().equals(LmConfig.getLobbyLevel())) {
-            player.teleport(LmConfig.getLobbySpawn());
+        if (player.getLevel().equals(getLobbyLevel())) {
+            if (VoidTp && player.getLocation().getY() < -30.0) {
+                player.teleport(getLobbySpawn());
+            }
+            if (DoubleJump && !player.isCreative() && player.isOnGround() && !player.getAllowFlight()) {
+                player.setAllowFlight(true);
+            }
+            String id = String.valueOf(event.getTo().add(0, -1, 0).getLevelBlock().getId());
+            if (!EffectBlock.isEmpty() && EffectBlock.containsKey(id)) {
+                String[] effectBlock = EffectBlock.get(id).split(":");
+                player.addEffect(Effect.getEffect(Integer.parseInt(effectBlock[0])).setDuration(Integer.parseInt(effectBlock[1])).setAmplifier(Integer.parseInt(effectBlock[2])));
+            }
         }
-
     }
 
     @EventHandler
     public void onWeatherChange(WeatherChangeEvent event) {
-        if (LmConfig.DisableWeather && event.getLevel().equals(LmConfig.getLobbyLevel())) {
+        if (DisableWeather && event.getLevel().equals(getLobbyLevel())) {
             event.setCancelled();
         }
 
@@ -118,7 +138,7 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void playerHunger(PlayerFoodLevelChangeEvent event) {
-        if (LmConfig.DisableHunger && event.getPlayer().getLevel().equals(LmConfig.getLobbyLevel())) {
+        if (DisableHunger && event.getPlayer().getLevel().equals(getLobbyLevel())) {
             event.setCancelled();
         }
 
@@ -127,16 +147,16 @@ public class Listeners implements Listener {
     @EventHandler
     public void playerTp(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        if (event.getTo().level.equals(LmConfig.getLobbyLevel())) {
-            if (!LmConfig.ItemCmdStr.isEmpty()) {
-                pluginUtil.JoinItem(LmConfig.ItemCmdStr, player);
+        if (event.getTo().level.equals(getLobbyLevel())) {
+            if (!ItemCmdStr.isEmpty()) {
+                pluginUtil.JoinItem(ItemCmdStr, player);
             }
         }
     }
 
     @EventHandler
     public void playerDamage(EntityDamageEvent event) {
-        if (LmConfig.DisableDamage && event.getEntity() instanceof Player && event.getEntity().getLevel().equals(LmConfig.getLobbyLevel())) {
+        if (DisableDamage && event.getEntity() instanceof Player && event.getEntity().getLevel().equals(getLobbyLevel())) {
             event.setCancelled();
         }
 
@@ -145,7 +165,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (LmConfig.DisableBreak && player.getLevel().equals(LmConfig.getLobbyLevel()) && (!player.isOp() || LmConfig.ConstraintOp)) {
+        if (DisableBreak && player.getLevel().equals(getLobbyLevel()) && (!player.isOp() || ConstraintOp)) {
             event.setCancelled();
         }
 
@@ -154,7 +174,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if (LmConfig.DisablePlace && player.getLevel().equals(LmConfig.getLobbyLevel()) && (!player.isOp() || LmConfig.ConstraintOp)) {
+        if (DisablePlace && player.getLevel().equals(getLobbyLevel()) && (!player.isOp() || ConstraintOp)) {
             event.setCancelled();
         }
 
@@ -204,7 +224,7 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void onBlockUpdate(BlockUpdateEvent event) {
-        if (LmConfig.DisableBlockUpdate && event.getBlock().level.equals(LmConfig.getLobbyLevel())) {
+        if (DisableBlockUpdate && event.getBlock().level.equals(getLobbyLevel())) {
             event.setCancelled();
         }
 
@@ -213,7 +233,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if (LmConfig.DisableItemDrop && player.getLevel().equals(LmConfig.getLobbyLevel()) && (!player.isOp() || LmConfig.ConstraintOp)) {
+        if (DisableItemDrop && player.getLevel().equals(getLobbyLevel()) && (!player.isOp() || ConstraintOp)) {
             event.setCancelled();
         }
 

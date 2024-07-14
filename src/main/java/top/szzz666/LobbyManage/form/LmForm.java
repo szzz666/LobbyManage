@@ -7,26 +7,28 @@ import cn.nukkit.form.element.ElementToggle;
 import cn.nukkit.form.handler.FormResponseHandler;
 import cn.nukkit.form.window.FormWindowCustom;
 import cn.nukkit.form.window.FormWindowSimple;
-import top.szzz666.LobbyManage.config.LangConfig;
 import top.szzz666.LobbyManage.config.LmConfig;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static top.szzz666.LobbyManage.config.LangConfig.*;
+import static top.szzz666.LobbyManage.config.LmConfig.*;
+
 public class LmForm {
     public static void mainForm(Player player) {
-        FormWindowSimple form = new FormWindowSimple(LangConfig.mainForm_title, LangConfig.mainForm_content);
-        form.addButton(new ElementButton(LangConfig.mainForm_button1));
-        form.addButton(new ElementButton(LangConfig.mainForm_button2));
+        FormWindowSimple form = new FormWindowSimple(mainForm_title, mainForm_content);
+        form.addButton(new ElementButton(mainForm_button1));
+        form.addButton(new ElementButton(mainForm_button2));
         form.addHandler(FormResponseHandler.withoutPlayer((ignored) -> {
             if (!form.wasClosed()) {
                 int buttonIndex = form.getResponse().getClickedButtonId();
                 if (buttonIndex == 0) {
                     Form0(player);
                 } else {
-                    LmConfig.loadConfig();
-                    LangConfig.loadLangConfig();
-                    player.sendMessage(LangConfig.mainForm_sendMessage);
+                    loadConfig();
+                    loadLangConfig();
+                    player.sendMessage(mainForm_sendMessage);
                 }
 
             }
@@ -35,35 +37,36 @@ public class LmForm {
     }
 
     public static void Form0(Player player) {
-        FormWindowCustom form = new FormWindowCustom(LangConfig.Form0_title);
-        form.addElement(new ElementInput(LangConfig.Form0_Element0, LmConfig.Language, LmConfig.Language));
-        form.addElement(new ElementInput(LangConfig.Form0_Element1, LmConfig.LobbySpawn, LmConfig.LobbySpawn));
-        form.addElement(new ElementInput(LangConfig.Form0_Element2, LmConfig.ReLobbyCmd, LmConfig.ReLobbyCmd));
-        form.addElement(new ElementInput(LangConfig.Form0_Element3, LmConfig.OpFormCmd, LmConfig.OpFormCmd));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element4, LmConfig.ConstraintOp));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element5, LmConfig.VoidTp));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element6, LmConfig.JoinTp));
-        form.addElement(new ElementInput(LangConfig.Form0_Element7, LmConfig.JoinMsg, LmConfig.JoinMsg));
-        form.addElement(new ElementInput(LangConfig.Form0_Element8, LmConfig.JoinTitle, LmConfig.JoinTitle));
-        form.addElement(new ElementInput(LangConfig.Form0_Element9, LmConfig.JoinConsoleCmd.toString().replaceAll("\\[", "").replace("]", ""), LmConfig.JoinConsoleCmd.toString().replaceAll("\\[", "").replace("]", "")));
-        form.addElement(new ElementInput(LangConfig.Form0_Element10, LmConfig.JoinPlayerCmd.toString().replaceAll("\\[", "").replace("]", ""), LmConfig.JoinPlayerCmd.toString().replaceAll("\\[", "").replace("]", "")));
-        form.addElement(new ElementInput(LangConfig.Form0_Element11, String.valueOf(LmConfig.FixedTime), String.valueOf(LmConfig.FixedTime)));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element12, LmConfig.DisableWeather));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element13, LmConfig.DisableHunger));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element14, LmConfig.DisableDamage));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element15, LmConfig.DisablePlace));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element16, LmConfig.DisableBreak));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element17, LmConfig.DisableInteract));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element18, LmConfig.DisableBlockUpdate));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element19, LmConfig.DisableItemDrop));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element20, LmConfig.QuitClear));
-        form.addElement(new ElementInput(LangConfig.Form0_Element21, LmConfig.QuitMsg,LmConfig.QuitMsg));
-        form.addElement(new ElementInput(LangConfig.Form0_Element22, LmConfig.QuitTitle, LmConfig.QuitTitle));
-        form.addElement(new ElementToggle(LangConfig.Form0_Element23, LmConfig.TimeSync));
-        form.addElement(new ElementInput(LangConfig.Form0_Element24, LmConfig.TimeZone,LmConfig.TimeZone));
-        form.addElement(new ElementInput(LangConfig.Form0_Element25, LmConfig.Latitude,LmConfig.Latitude));
-        form.addElement(new ElementInput(LangConfig.Form0_Element26, LmConfig.Longitude,LmConfig.Longitude));
-        form.addElement(new ElementInput(LangConfig.Form0_Element27, String.valueOf(LmConfig.TaskDelay),String.valueOf(LmConfig.TaskDelay)));
+        FormWindowCustom form = new FormWindowCustom(Form0_title);
+        form.addElement(new ElementInput(Form0_Element0, Language, Language));
+        form.addElement(new ElementInput(Form0_Element1, LobbySpawn, LobbySpawn));
+        form.addElement(new ElementInput(Form0_Element2, ReLobbyCmd, ReLobbyCmd));
+        form.addElement(new ElementInput(Form0_Element3, OpFormCmd, OpFormCmd));
+        form.addElement(new ElementToggle(Form0_Element4, ConstraintOp));
+        form.addElement(new ElementToggle(Form0_Element5, VoidTp));
+        form.addElement(new ElementToggle(Form0_Element6, JoinTp));
+        form.addElement(new ElementInput(Form0_Element7, JoinMsg, JoinMsg));
+        form.addElement(new ElementInput(Form0_Element8, JoinTitle, JoinTitle));
+        form.addElement(new ElementInput(Form0_Element9, JoinConsoleCmd.toString().replaceAll("\\[", "").replace("]", ""), JoinConsoleCmd.toString().replaceAll("\\[", "").replace("]", "")));
+        form.addElement(new ElementInput(Form0_Element10, JoinPlayerCmd.toString().replaceAll("\\[", "").replace("]", ""), JoinPlayerCmd.toString().replaceAll("\\[", "").replace("]", "")));
+        form.addElement(new ElementInput(Form0_Element11, String.valueOf(FixedTime), String.valueOf(FixedTime)));
+        form.addElement(new ElementToggle(Form0_Element12, DisableWeather));
+        form.addElement(new ElementToggle(Form0_Element13, DisableHunger));
+        form.addElement(new ElementToggle(Form0_Element14, DisableDamage));
+        form.addElement(new ElementToggle(Form0_Element15, DisablePlace));
+        form.addElement(new ElementToggle(Form0_Element16, DisableBreak));
+        form.addElement(new ElementToggle(Form0_Element17, DisableInteract));
+        form.addElement(new ElementToggle(Form0_Element18, DisableBlockUpdate));
+        form.addElement(new ElementToggle(Form0_Element19, DisableItemDrop));
+        form.addElement(new ElementToggle(Form0_Element20, QuitClear));
+        form.addElement(new ElementInput(Form0_Element21, QuitMsg,QuitMsg));
+        form.addElement(new ElementInput(Form0_Element22, QuitTitle, QuitTitle));
+        form.addElement(new ElementToggle(Form0_Element23, TimeSync));
+        form.addElement(new ElementInput(Form0_Element24, TimeZone,TimeZone));
+        form.addElement(new ElementInput(Form0_Element25, Latitude,Latitude));
+        form.addElement(new ElementInput(Form0_Element26, Longitude,Longitude));
+        form.addElement(new ElementInput(Form0_Element27, String.valueOf(TaskDelay),String.valueOf(TaskDelay)));
+        form.addElement(new ElementToggle(Form0_Element28, DoubleJump));
         form.addHandler(FormResponseHandler.withoutPlayer((ignored) -> {
             if (!form.wasClosed()) {
                 String Language = form.getResponse().getInputResponse(0);
@@ -94,6 +97,7 @@ public class LmForm {
                 String Latitude= form.getResponse().getInputResponse(25);
                 String Longitude= form.getResponse().getInputResponse(26);
                 String TaskDelay= form.getResponse().getInputResponse(27);
+                boolean DoubleJump= form.getResponse().getToggleResponse(28);
                 LmConfig.Language = Language;
                 LmConfig.LobbySpawn = LobbySpawn;
                 LmConfig.ReLobbyCmd = ReLobbyCmd;
@@ -120,11 +124,12 @@ public class LmForm {
                 LmConfig.DisablePlace = DisablePlace;
                 LmConfig.DisableBreak = DisableBreak;
                 LmConfig.DisableInteract = DisableInteract;
+                LmConfig.DoubleJump=DoubleJump;
                 LmConfig.DisableBlockUpdate = DisableBlockUpdate;
                 LmConfig.DisableItemDrop = DisableItemDrop;
-                LmConfig.saveConfig();
-                LangConfig.loadLangConfig();
-                player.sendMessage(LangConfig.Form0_sendMessage);
+                saveConfig();
+                loadLangConfig();
+                player.sendMessage(Form0_sendMessage);
             }
         }));
         player.showFormWindow(form);
