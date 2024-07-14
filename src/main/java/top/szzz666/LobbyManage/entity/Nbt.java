@@ -3,89 +3,85 @@ package top.szzz666.LobbyManage.entity;
 import java.util.List;
 
 public class Nbt {
-    private Tag tag;
+   private Tag tag;
 
-    public Tag getTag() {
-        return tag;
-    }
+   public Tag getTag() {
+      return this.tag;
+   }
 
-    public void setTag(Tag tag) {
-        this.tag = tag;
-    }
+   public void setTag(Tag tag) {
+      this.tag = tag;
+   }
 
-    public static class Tag {
-        private List<Enchantment> ench;
+   public static class Tag {
+      private List<Enchantment> ench;
+      private boolean minecraft_itemLock;
+      private Display display;
 
+      public List<Enchantment> getEnch() {
+         return this.ench;
+      }
 
-        private boolean minecraft_itemLock;
-        private Display display;
+      public void setEnch(List<Enchantment> ench) {
+         this.ench = ench;
+      }
 
-        public List<Enchantment> getEnch() {
-            return ench;
-        }
+      public boolean isMinecraft_itemLock() {
+         return this.minecraft_itemLock;
+      }
 
-        public void setEnch(List<Enchantment> ench) {
-            this.ench = ench;
-        }
+      public void setMinecraft_itemLock(boolean minecraft_itemLock) {
+         this.minecraft_itemLock = minecraft_itemLock;
+      }
 
-        public boolean isMinecraft_itemLock() {
-            return minecraft_itemLock;
-        }
+      public Display getDisplay() {
+         return this.display;
+      }
 
-        public void setMinecraft_itemLock(boolean minecraft_itemLock) {
-            this.minecraft_itemLock = minecraft_itemLock;
-        }
+      public void setDisplay(Display display) {
+         this.display = display;
+      }
+   }
 
+   public static class Display {
+      private List<String> Lore;
+      private String Name;
 
-        public Display getDisplay() {
-            return display;
-        }
+      public List<String> getLore() {
+         return this.Lore;
+      }
 
-        public void setDisplay(Display display) {
-            this.display = display;
-        }
-    }
+      public void setLore(List<String> lore) {
+         this.Lore = lore;
+      }
 
-    public static class Enchantment {
-        private int id;
-        private int lvl;
+      public String getName() {
+         return this.Name;
+      }
 
-        public int getId() {
-            return id;
-        }
+      public void setName(String name) {
+         this.Name = name;
+      }
+   }
 
-        public void setId(int id) {
-            this.id = id;
-        }
+   public static class Enchantment {
+      private int id;
+      private int lvl;
 
-        public int getLvl() {
-            return lvl;
-        }
+      public int getId() {
+         return this.id;
+      }
 
-        public void setLvl(int lvl) {
-            this.lvl = lvl;
-        }
-    }
+      public void setId(int id) {
+         this.id = id;
+      }
 
-    public static class Display {
-        private List<String> Lore;
-        private String Name;
+      public int getLvl() {
+         return this.lvl;
+      }
 
-        public List<String> getLore() {
-            return Lore;
-        }
-
-        public void setLore(List<String> lore) {
-            Lore = lore;
-        }
-
-        public String getName() {
-            return Name;
-        }
-
-        public void setName(String name) {
-            Name = name;
-        }
-    }
-
+      public void setLvl(int lvl) {
+         this.lvl = lvl;
+      }
+   }
 }

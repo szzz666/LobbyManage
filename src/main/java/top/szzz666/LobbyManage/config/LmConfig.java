@@ -5,17 +5,16 @@ import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.utils.Config;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import top.szzz666.LobbyManage.LobbyManageMain;
 import top.szzz666.LobbyManage.entity.Nbt;
+import top.szzz666.LobbyManage.tools.pluginUtil;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static top.szzz666.LobbyManage.LobbyManageMain.*;
-import static top.szzz666.LobbyManage.tools.pluginUtil.nkConsole;
-import static top.szzz666.LobbyManage.tools.pluginUtil.readFile;
+import java.util.List;
 
 public class LmConfig {
     public static String Language;
@@ -25,10 +24,13 @@ public class LmConfig {
     public static boolean ConstraintOp;
     public static boolean VoidTp;
     public static boolean JoinTp;
+    public static boolean QuitClear;
     public static String JoinMsg;
     public static String JoinTitle;
-    public static ArrayList<String> JoinConsoleCmd;
-    public static ArrayList<String> JoinPlayerCmd;
+    public static String QuitMsg;
+    public static String QuitTitle;
+    public static List<String> JoinConsoleCmd;
+    public static List<String> JoinPlayerCmd;
     public static int FixedTime;
     public static boolean DisableWeather;
     public static boolean DisableHunger;
@@ -43,10 +45,9 @@ public class LmConfig {
     public static HashMap<String, Nbt> nbtMap = new HashMap<>();
     public static HashMap<Player, Integer> CommandCoolTick = new HashMap<>();
 
-
     public static boolean loadConfig() {
-        plugin.saveResource("config.yml");
-        Config config = new Config(ConfigPath + "/config.yml", Config.YAML);
+        LobbyManageMain.plugin.saveResource("config.yml");
+        Config config = new Config(LobbyManageMain.ConfigPath + "/config.yml", 2);
         Language = config.getString("Language");
         LobbySpawn = config.getString("LobbySpawn");
         ReLobbyCmd = config.getString("ReLobbyCmd");
@@ -54,10 +55,13 @@ public class LmConfig {
         ConstraintOp = config.getBoolean("ConstraintOp");
         VoidTp = config.getBoolean("VoidTp");
         JoinTp = config.getBoolean("JoinTp");
+        QuitClear = config.getBoolean("QuitClear");
         JoinMsg = config.getString("JoinMsg");
         JoinTitle = config.getString("JoinTitle");
-        JoinConsoleCmd = (ArrayList<String>) config.get("JoinConsoleCmd");
-        JoinPlayerCmd = (ArrayList<String>) config.get("JoinPlayerCmd");
+        QuitMsg = config.getString("QuitMsg");
+        QuitTitle = config.getString("QuitTitle");
+        JoinConsoleCmd = config.getStringList("JoinConsoleCmd");
+        JoinPlayerCmd = config.getStringList("JoinPlayerCmd");
         FixedTime = config.getInt("FixedTime");
         DisableWeather = config.getBoolean("DisableWeather");
         DisableHunger = config.getBoolean("DisableHunger");
@@ -67,13 +71,13 @@ public class LmConfig {
         DisableInteract = config.getBoolean("DisableInteract");
         DisableBlockUpdate = config.getBoolean("DisableBlockUpdate");
         DisableItemDrop = config.getBoolean("DisableItemDrop");
-        ItemCmdStr = (HashMap<String, ArrayList<String>>) config.get("ItemCmd");
+        ItemCmdStr = (HashMap) config.get("ItemCmd");
         config.save();
         return true;
     }
 
     public static boolean saveConfig() {
-        Config config = new Config(ConfigPath + "/config.yml", Config.YAML);
+        Config config = new Config(LobbyManageMain.ConfigPath + "/config.yml", 2);
         config.set("Language", Language);
         config.set("LobbySpawn", LobbySpawn);
         config.set("ReLobbyCmd", ReLobbyCmd);
@@ -81,8 +85,11 @@ public class LmConfig {
         config.set("ConstraintOp", ConstraintOp);
         config.set("VoidTp", VoidTp);
         config.set("JoinTp", JoinTp);
+        config.set("QuitClear", QuitClear);
         config.set("JoinMsg", JoinMsg);
         config.set("JoinTitle", JoinTitle);
+        config.set("QuitMsg", QuitMsg);
+        config.set("QuitTitle", QuitTitle);
         config.set("JoinConsoleCmd", JoinConsoleCmd);
         config.set("JoinPlayerCmd", JoinPlayerCmd);
         config.set("FixedTime", FixedTime);
@@ -99,27 +106,23 @@ public class LmConfig {
     }
 
     public static boolean loadNbts() {
-        plugin.saveResource("nbts.json");
-        String nbtJson = readFile(ConfigPath + "/nbts.json");
+        LobbyManageMain.plugin.saveResource("nbts.json");
+        String nbtJson = pluginUtil.readFile(LobbyManageMain.ConfigPath + "/nbts.json");
         Gson gson = new Gson();
-        Type type = new TypeToken<HashMap<String, Nbt>>() {
-        }.getType();
+        Type type = (new TypeToken<HashMap<String, Nbt>>() {
+        }).getType();
         nbtMap = gson.fromJson(nbtJson, type);
-        nkConsole(nbtMap.get("nbt1").toString());
+        pluginUtil.nkConsole(nbtMap.get("nbt1").toString());
         return true;
     }
 
     public static Position getLobbySpawn() {
         String[] split = LobbySpawn.split("&");
         String[] split1 = split[0].split(",");
-        return new Position(Double.parseDouble(split1[0]),
-                Double.parseDouble(split1[1]),
-                Double.parseDouble(split1[2]),
-                nkServer.getLevelByName(split[1]));
+        return new Position(Double.parseDouble(split1[0]), Double.parseDouble(split1[1]), Double.parseDouble(split1[2]), LobbyManageMain.nkServer.getLevelByName(split[1]));
     }
 
     public static Level getLobbyLevel() {
-        return nkServer.getLevelByName(LobbySpawn.split("&")[1]);
+        return LobbyManageMain.nkServer.getLevelByName(LobbySpawn.split("&")[1]);
     }
-
 }
