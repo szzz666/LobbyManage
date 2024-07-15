@@ -11,7 +11,7 @@ ReLobbyCmd: "hub"
 OpFormCmd: "lm"
 
 # 是否限制Op破坏放置方块和交互以及丢弃物品
-ConstraintOp: true
+ConstraintOp: false
 
 # 开启虚空传送。
 VoidTp: true
@@ -19,11 +19,17 @@ VoidTp: true
 # 进服回城
 JoinTp: true
 
-# 设置玩家加入游戏时显示的消息。(为空不启用)
-JoinMsg: "欢迎 %player% 来到lobby"
+# 退出后清除玩家数据(推荐小游戏服务器开启)
+QuitClear: true
 
+# 设置玩家加入游戏时显示的消息。(为空不启用)
+JoinMsg: "欢迎 %player% 来到 Server"
+# 设置玩家退出游戏时显示的消息。(为空不启用)
+QuitMsg: "%player% 退出了 Server"
 # 设置玩家加入游戏时显示的标题。(为空不启用)
-JoinTitle: "欢迎 %player% 来到lobby&副标题&20,20,20"
+JoinTitle: "欢迎 %player% 来到 Server&副标题&20,20,20"
+# 设置玩家退出游戏时显示的标题。(为空不启用)
+QuitTitle: "%player% 退出了 Server&副标题&20,20,20"
 
 # 定义玩家加入游戏时在控制台执行的命令。(为空不启用)
 JoinConsoleCmd:
@@ -32,16 +38,36 @@ JoinConsoleCmd:
 
 # 定义玩家加入游戏时对玩家执行的命令。(为空不启用)
 JoinPlayerCmd:
-  - "say hello"
+  - "op#say hello"
   - "say hello2"
 
-# 固定世界间隔(为-1不启用)
+#现实时间
+RealTime:
+  # 同步现实时间
+  TimeSync: true
+  # 时区信息
+  TimeZone: "Asia/Shanghai"
+  # 经度
+  Latitude: "121.442254"
+  # 纬度
+  Longitude: "31.290135"
+
+# 固定服务器时间(为-1不启用)
+# 如果启用同步现实时间,会自动关闭此功能
 FixedTime: 6000
+
+# 时间设置任务的执行间隔
+TaskDelay: 1200
+
+# 效果方块 [EffectId:Tick:Level]
+EffectBlock:
+  "222": "1:60:2"
 
 # 禁止天气变化。
 DisableWeather: true
 
 # 禁止饥饿度减少。
+
 DisableHunger: true
 
 # 禁止玩家受到伤害。
@@ -56,6 +82,9 @@ DisableBreak: true
 # 禁止玩家交互。
 DisableInteract: true
 
+# 双跳。
+DoubleJump: true
+
 # 禁止方块更新。
 DisableBlockUpdate: true
 
@@ -68,8 +97,8 @@ DisableItemDrop: true
 # 为空不启用
 ItemCmd:
 #  "1:0:1:2:name=点击回城": "hub"
-  "345:0:1:2:nbt=nbt1": [ form show 小游戏 ]
-  "397:3:1:3:nbt=nbt2": [ team ]
-  "2:0:1:4:nbt=nbt3": [ form show 星空生存 ]
-  "355:0:1:5:nbt=nbt4": [ form show 返回出生点 ]
-  "399:0:1:6:nbt=nbt5": [ form show 其他 ]
+  "345:0:1:2:nbt=nbt1": [ "form show 小游戏" ]
+  "397:3:1:3:nbt=nbt2": [ "team" ]
+  "2:0:1:4:nbt=nbt3": [ "form show 星空生存" ]
+  "355:0:1:5:nbt=nbt4": [ "op#form show 返回出生点" ]
+  "399:0:1:6:nbt=nbt5": [ "console#givemoney %player% 6" ]
