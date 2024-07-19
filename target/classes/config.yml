@@ -45,12 +45,8 @@ JoinPlayerCmd:
 RealTime:
   # 同步现实时间
   TimeSync: true
-  # 时区信息
-  TimeZone: "Asia/Shanghai"
-  # 经度
-  Latitude: "121.442254"
-  # 纬度
-  Longitude: "31.290135"
+  # 时间偏移
+  TimeOffset: "+8"
 
 # 固定服务器时间(为-1不启用)
 # 如果启用同步现实时间,会自动关闭此功能

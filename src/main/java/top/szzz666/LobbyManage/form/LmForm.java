@@ -62,9 +62,7 @@ public class LmForm {
         form.addElement(new ElementInput(Form0_Element21, QuitMsg,QuitMsg));
         form.addElement(new ElementInput(Form0_Element22, QuitTitle, QuitTitle));
         form.addElement(new ElementToggle(Form0_Element23, TimeSync));
-        form.addElement(new ElementInput(Form0_Element24, TimeZone,TimeZone));
-        form.addElement(new ElementInput(Form0_Element25, Latitude,Latitude));
-        form.addElement(new ElementInput(Form0_Element26, Longitude,Longitude));
+        form.addElement(new ElementInput(Form0_Element24, TimeOffset,TimeOffset));
         form.addElement(new ElementInput(Form0_Element27, String.valueOf(TaskDelay),String.valueOf(TaskDelay)));
         form.addElement(new ElementToggle(Form0_Element28, DoubleJump));
         form.addHandler(FormResponseHandler.withoutPlayer((ignored) -> {
@@ -93,9 +91,7 @@ public class LmForm {
                 String QuitMsg = form.getResponse().getInputResponse(21);
                 String QuitTitle = form.getResponse().getInputResponse(22);
                 boolean TimeSync = form.getResponse().getToggleResponse(23);
-                String TimeZone= form.getResponse().getInputResponse(24);
-                String Latitude= form.getResponse().getInputResponse(25);
-                String Longitude= form.getResponse().getInputResponse(26);
+                String TimeOffset= form.getResponse().getInputResponse(24);
                 String TaskDelay= form.getResponse().getInputResponse(27);
                 boolean DoubleJump= form.getResponse().getToggleResponse(28);
                 LmConfig.Language = Language;
@@ -113,9 +109,7 @@ public class LmForm {
                 LmConfig.JoinConsoleCmd = JoinConsoleCmd;
                 LmConfig.JoinPlayerCmd = JoinPlayerCmd;
                 LmConfig.TimeSync=TimeSync;
-                LmConfig.TimeZone=TimeZone;
-                LmConfig.Latitude=Latitude;
-                LmConfig.Longitude=Longitude;
+                LmConfig.TimeOffset=TimeOffset;
                 LmConfig.FixedTime = Integer.parseInt(FixedTime);
                 LmConfig.TaskDelay=Integer.parseInt(TaskDelay);
                 LmConfig.DisableWeather = DisableWeather;

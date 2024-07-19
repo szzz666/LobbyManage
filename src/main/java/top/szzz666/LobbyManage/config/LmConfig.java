@@ -34,9 +34,7 @@ public class LmConfig {
     public static boolean DisableWeather;
     public static int FixedTime;
     public static boolean TimeSync;
-    public static String TimeZone;
-    public static String Latitude;
-    public static String Longitude;
+    public static String TimeOffset;
     public static int TaskDelay;
     public static HashMap<String,String> EffectBlock;
     public static boolean DisableHunger;
@@ -71,9 +69,7 @@ public class LmConfig {
         JoinPlayerCmd = config.getStringList("JoinPlayerCmd");
         FixedTime = config.getInt("FixedTime");
         TimeSync = config.getBoolean("RealTime.TimeSync");
-        TimeZone= config.getString("RealTime.TimeZone");
-        Latitude= config.getString("RealTime.Latitude");
-        Longitude= config.getString("RealTime.Longitude");
+        TimeOffset= config.getString("RealTime.TimeOffset");
         TaskDelay=config.getInt("TaskDelay");
         EffectBlock=(HashMap<String, String>) config.get("EffectBlock");
         DisableWeather = config.getBoolean("DisableWeather");
@@ -108,9 +104,7 @@ public class LmConfig {
         config.set("JoinPlayerCmd", JoinPlayerCmd);
         config.set("FixedTime", FixedTime);
         config.set("RealTime.TimeSync", TimeSync);
-        config.set("RealTime.TimeZone", TimeZone);
-        config.set("RealTime.Latitude", Latitude);
-        config.set("RealTime.Longitude", Longitude);
+        config.set("RealTime.TimeOffset", TimeOffset);
         config.set("TaskDelay",TaskDelay);
         config.set("EffectBlock",EffectBlock);
         config.set("DisableWeather", DisableWeather);

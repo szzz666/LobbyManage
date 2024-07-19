@@ -11,14 +11,15 @@ import top.szzz666.LobbyManage.LobbyManageMain;
 import top.szzz666.LobbyManage.config.LmConfig;
 import top.szzz666.LobbyManage.entity.Nbt;
 
-import javax.naming.ConfigurationException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalTime;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import static java.util.TimeZone.getTimeZone;
 import static top.szzz666.LobbyManage.LobbyManageMain.nkServer;
 import static top.szzz666.LobbyManage.LobbyManageMain.plugin;
 import static top.szzz666.LobbyManage.config.LmConfig.TaskDelay;
@@ -121,13 +122,7 @@ public class pluginUtil {
             nkServer.getScheduler().scheduleRepeatingTask(plugin, new Task() {
                 public void onRun(int currentTick) {
                     if(TimeSync){
-                        SunriseSunsetRequestObject sunriseSunset = null;
-                        try {
-                            sunriseSunset = new SunriseSunsetRequestObject(getTimeZone(LmConfig.TimeZone), LmConfig.Latitude, LmConfig.Longitude);
-                        } catch (IOException | ConfigurationException e) {
-                            throw new RuntimeException(e);
-                        }
-                        int time =calculateWorldTime(Calendar.getInstance(getTimeZone(LmConfig.TimeZone)), sunriseSunset.getSunriseTime(), sunriseSunset.getSunsetTime());
+                        int time = (int) ((LocalDateTime.now().toEpochSecond(ZoneOffset.of(LmConfig.TimeOffset)) - 8000 + 24000) % 24000);
                         for (Level world : nkServer.getLevels().values()) {
                             world.setTime(time);
                         }
@@ -138,28 +133,5 @@ public class pluginUtil {
                     }
                 }
             }, TaskDelay);
-    }
-
-    private static int calculateWorldTime(Calendar cal, String sunriseTime, String sunsetTime) {
-        String[] sunriseTimeSplit = sunriseTime.split(":");
-        String[] sunsetTimeSplit = sunsetTime.split(":");
-        int sunriseMinutes = Integer.parseInt(sunriseTimeSplit[0]) * 60 + Integer.parseInt(sunriseTimeSplit[1]) + Integer.parseInt(sunriseTimeSplit[2].substring(0, 2)) / 60;
-        int sunsetMinutes = Integer.parseInt(sunsetTimeSplit[0]) * 60 + Integer.parseInt(sunsetTimeSplit[1]) + Integer.parseInt(sunsetTimeSplit[2].substring(0, 2)) / 60;
-        if (sunriseTimeSplit[2].substring(3).equalsIgnoreCase("PM")) {
-            sunriseMinutes += 720;
-        }
-        if (sunsetTimeSplit[2].substring(3).equalsIgnoreCase("PM")) {
-            sunsetMinutes += 720;
-        }
-        LocalTime currentTime = LocalTime.of(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE));
-        int currentMinutes = currentTime.getHour() * 60 + currentTime.getMinute();
-        if (currentMinutes >= sunriseMinutes && currentMinutes < sunsetMinutes) {
-            return (currentMinutes - sunriseMinutes) / (sunsetMinutes - sunriseMinutes) * 13569 + 23041;
-        } else {
-            if (currentMinutes < sunriseMinutes) {
-                currentMinutes += 1440;
-            }
-            return (currentMinutes - sunsetMinutes) / (1440 - sunsetMinutes + sunriseMinutes) * 13569 + 12610;
-        }
     }
 }
