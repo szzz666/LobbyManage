@@ -53,12 +53,17 @@ public class Listeners implements Listener {
             for (String cmd : JoinPlayerCmd) {
                 if (cmd.startsWith("op#")) {
                     cmd = cmd.replace("op#", "");
-                    player.setOp(true);
-                    LobbyManageMain.nkServer.dispatchCommand(player, cmd.replace("%player%", player.getName()));
-                    player.setOp(false);
-                } else {
-                    LobbyManageMain.nkServer.dispatchCommand(player, cmd.replace("%player%", player.getName()));
+                    if(!player.isOp()) {
+                        try {
+                            player.setOp(true);
+                            LobbyManageMain.nkServer.dispatchCommand(player, cmd.replace("%player%", player.getName()));
+                        } finally {
+                            player.setOp(false);
+                        }
+                        continue;
+                    }
                 }
+                LobbyManageMain.nkServer.dispatchCommand(player, cmd.replace("%player%", player.getName()));
             }
         }
 
@@ -200,18 +205,21 @@ public class Listeners implements Listener {
                     cmd = cmd.replace("%player%", player.getName());
                     if (cmd.startsWith("op#")) {
                         cmd = cmd.replace("op#", "");
-                        try {
-                            player.setOp(true);
-                            nkServer.dispatchCommand(player, cmd);
-                        } finally {
-                            player.setOp(false);
+                        if(!player.isOp()) {
+                            try {
+                                player.setOp(true);
+                                nkServer.dispatchCommand(player, cmd);
+                            } finally {
+                                player.setOp(false);
+                            }
+                            continue;
                         }
                     } else if (cmd.startsWith("console#")) {
                         cmd = cmd.replace("console#", "");
                         nkServer.dispatchCommand(nkServer.getConsoleSender(), cmd);
-                    } else {
-                        nkServer.dispatchCommand(player, cmd);
+                        continue;
                     }
+                    nkServer.dispatchCommand(player, cmd);
                 }
             }
         }
