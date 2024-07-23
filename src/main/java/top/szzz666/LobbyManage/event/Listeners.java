@@ -16,6 +16,7 @@ import cn.nukkit.level.Sound;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.AsyncTask;
 import top.szzz666.LobbyManage.LobbyManageMain;
+import top.szzz666.LobbyManage.config.LmConfig;
 import top.szzz666.LobbyManage.tools.pluginUtil;
 
 import java.io.File;
@@ -122,7 +123,7 @@ public class Listeners implements Listener {
             if (VoidTp && player.getLocation().getY() < -30.0) {
                 player.teleport(getLobbySpawn());
             }
-            if (DoubleJump && !player.isCreative() && player.isOnGround() && !player.getAllowFlight()) {
+            if (DoubleJump && !player.isCreative()&&player.level.equals(LmConfig.getLobbyLevel()) && player.isOnGround() && !player.getAllowFlight()) {
                 player.setAllowFlight(true);
             }
             String id = String.valueOf(event.getTo().add(0, -1, 0).getLevelBlock().getId());
@@ -155,6 +156,15 @@ public class Listeners implements Listener {
         if (event.getTo().level.equals(getLobbyLevel())) {
             if (!ItemCmdStr.isEmpty()) {
                 pluginUtil.JoinItem(ItemCmdStr, player);
+            }
+            if(Yaw!=-9999){
+                event.getPlayer().yaw=Yaw;
+            }
+            if(Pitch!=-9999){
+                event.getPlayer().pitch=Pitch;
+            }
+            if(HeadYaw!=-9999){
+                event.getPlayer().headYaw=HeadYaw;
             }
         }
     }

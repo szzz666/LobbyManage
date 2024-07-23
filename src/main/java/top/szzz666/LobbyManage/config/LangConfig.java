@@ -38,8 +38,9 @@ public class LangConfig {
    public static String Form0_Element22;
    public static String Form0_Element23;
    public static String Form0_Element24;
+   public static String Form0_Element25;
+   public static String Form0_Element26;
    public static String Form0_Element27;
-   public static String Form0_Element28;
    public static String Form0_sendMessage;
 
    public static boolean loadLangConfig() {
@@ -80,8 +81,9 @@ public class LangConfig {
       Form0_Element22 = LangConfig.getString("Form0_Element22");
       Form0_Element23=LangConfig.getString("Form0_Element23");
       Form0_Element24=LangConfig.getString("Form0_Element24");
+      Form0_Element25=LangConfig.getString("Form0_Element25");
+      Form0_Element26=LangConfig.getString("Form0_Element26");
       Form0_Element27=LangConfig.getString("Form0_Element27");
-      Form0_Element28=LangConfig.getString("Form0_Element28");
       Form0_sendMessage = LangConfig.getString("Form0_sendMessage");
       LangConfig.save();
       return true;

@@ -62,9 +62,10 @@ public class LmForm {
         form.addElement(new ElementInput(Form0_Element21, QuitMsg,QuitMsg));
         form.addElement(new ElementInput(Form0_Element22, QuitTitle, QuitTitle));
         form.addElement(new ElementToggle(Form0_Element23, TimeSync));
-        form.addElement(new ElementInput(Form0_Element24, TimeOffset,TimeOffset));
-        form.addElement(new ElementInput(Form0_Element27, String.valueOf(TaskDelay),String.valueOf(TaskDelay)));
-        form.addElement(new ElementToggle(Form0_Element28, DoubleJump));
+        form.addElement(new ElementInput(Form0_Element24, Latitude,Latitude));
+        form.addElement(new ElementInput(Form0_Element25, Longitude,Longitude));
+        form.addElement(new ElementInput(Form0_Element26, String.valueOf(TaskDelay),String.valueOf(TaskDelay)));
+        form.addElement(new ElementToggle(Form0_Element27, DoubleJump));
         form.addHandler(FormResponseHandler.withoutPlayer((ignored) -> {
             if (!form.wasClosed()) {
                 String Language = form.getResponse().getInputResponse(0);
@@ -91,9 +92,10 @@ public class LmForm {
                 String QuitMsg = form.getResponse().getInputResponse(21);
                 String QuitTitle = form.getResponse().getInputResponse(22);
                 boolean TimeSync = form.getResponse().getToggleResponse(23);
-                String TimeOffset= form.getResponse().getInputResponse(24);
-                String TaskDelay= form.getResponse().getInputResponse(27);
-                boolean DoubleJump= form.getResponse().getToggleResponse(28);
+                String Latitude= form.getResponse().getInputResponse(24);
+                String Longitude= form.getResponse().getInputResponse(25);
+                String TaskDelay= form.getResponse().getInputResponse(26);
+                boolean DoubleJump= form.getResponse().getToggleResponse(27);
                 LmConfig.Language = Language;
                 LmConfig.LobbySpawn = LobbySpawn;
                 LmConfig.ReLobbyCmd = ReLobbyCmd;
@@ -109,7 +111,8 @@ public class LmForm {
                 LmConfig.JoinConsoleCmd = JoinConsoleCmd;
                 LmConfig.JoinPlayerCmd = JoinPlayerCmd;
                 LmConfig.TimeSync=TimeSync;
-                LmConfig.TimeOffset=TimeOffset;
+                LmConfig.Latitude=Latitude;
+                LmConfig.Longitude=Longitude;
                 LmConfig.FixedTime = Integer.parseInt(FixedTime);
                 LmConfig.TaskDelay=Integer.parseInt(TaskDelay);
                 LmConfig.DisableWeather = DisableWeather;

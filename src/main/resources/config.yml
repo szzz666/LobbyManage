@@ -45,8 +45,10 @@ JoinPlayerCmd:
 RealTime:
   # 同步现实时间
   TimeSync: true
-  # 时间偏移
-  TimeOffset: "+8"
+  # 经度
+  Latitude: "121.442254"
+  # 纬度
+  Longitude: "31.290135"
 
 # 固定服务器时间(为-1不启用)
 # 如果启用同步现实时间,会自动关闭此功能
@@ -58,6 +60,13 @@ TaskDelay: 1200
 # 效果方块 [EffectId:Tick:Level]
 EffectBlock:
   "222": "1:60:2"
+
+#进入服务器视角
+JoinAngle:
+  # 为-9999.0则不启用
+  Yaw: 0.0
+  Pitch: 0.0
+  HeadYaw: 0.0
 
 # 禁止天气变化。
 DisableWeather: true

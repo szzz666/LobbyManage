@@ -21,7 +21,7 @@ public class SunriseSunsetRequestObject {
     private String sunriseTime;
     private String sunsetTime;
 
-    public SunriseSunsetRequestObject(TimeZone timeZone, String lat, String lon) throws IOException, ConfigurationException {
+    public SunriseSunsetRequestObject(String lat, String lon) throws IOException, ConfigurationException {
         URL url = new URL("https://api.sunrisesunset.io/json?lat="+lat+"&lng="+lon+"&timezone=UTC");
         HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
         con.setRequestMethod("GET");
@@ -50,8 +50,8 @@ public class SunriseSunsetRequestObject {
             if (!this.sunriseTime.equalsIgnoreCase("null") && !this.sunsetTime.equalsIgnoreCase("null")) {
                 DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm:ss a", Locale.ENGLISH);
                 LocalDate currentDate = LocalDate.now(ZoneId.of("UTC"));
-                this.sunriseTime = ZonedDateTime.of(currentDate, LocalTime.parse(this.sunriseTime, timeFormatter), ZoneId.of("UTC")).withZoneSameInstant(timeZone.toZoneId()).format(timeFormatter);
-                this.sunsetTime = ZonedDateTime.of(currentDate, LocalTime.parse(this.sunsetTime, timeFormatter), ZoneId.of("UTC")).withZoneSameInstant(timeZone.toZoneId()).format(timeFormatter);
+                this.sunriseTime = ZonedDateTime.of(currentDate, LocalTime.parse(this.sunriseTime, timeFormatter), ZoneId.of("UTC")).withZoneSameInstant(TimeZone.getDefault().toZoneId()).format(timeFormatter);
+                this.sunsetTime = ZonedDateTime.of(currentDate, LocalTime.parse(this.sunsetTime, timeFormatter), ZoneId.of("UTC")).withZoneSameInstant(TimeZone.getDefault().toZoneId()).format(timeFormatter);
             } else {
                 throw new ConfigurationException("Time(s) returned null. Check the sunrise/sunset longitude and latitude.");
             }

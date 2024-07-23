@@ -115,7 +115,7 @@ nbts.json
     "tag": {
       "ench": [
         {
-          "id": 0,
+          "id": -1,
           "lvl": 1
         }
       ],
@@ -133,7 +133,7 @@ nbts.json
     "tag": {
       "ench": [
         {
-          "id": 0,
+          "id": -1,
           "lvl": 1
         }
       ],
@@ -151,7 +151,7 @@ nbts.json
     "tag": {
       "ench": [
         {
-          "id": 0,
+          "id": -1,
           "lvl": 1
         }
       ],
@@ -169,7 +169,7 @@ nbts.json
     "tag": {
       "ench": [
         {
-          "id": 0,
+          "id": -1,
           "lvl": 1
         }
       ],
@@ -187,7 +187,7 @@ nbts.json
     "tag": {
       "ench": [
         {
-          "id": 0,
+          "id": -1,
           "lvl": 1
         }
       ],
@@ -200,7 +200,6 @@ nbts.json
       }
     }
   }
-
 }
 ```
 下载：https://github.com/szzz666/LobbyManage/releases

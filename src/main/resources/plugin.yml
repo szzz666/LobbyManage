@@ -1,6 +1,6 @@
 name: LobbyManage
 main: top.szzz666.LobbyManage.LobbyManageMain
-version: "1.1.2"
+version: "1.1.1"
 author: szzz666
 api: ["1.0.0"]
 description: LobbyManage plugin
