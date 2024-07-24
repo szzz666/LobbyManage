@@ -3,7 +3,7 @@ package top.szzz666.LobbyManage.config;
 import cn.nukkit.Player;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
-import cn.nukkit.level.Position;
+import cn.nukkit.level.Location;
 import cn.nukkit.utils.Config;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -38,6 +38,7 @@ public class LmConfig {
     public static String Longitude;
     public static int TaskDelay;
     public static HashMap<String,String> EffectBlock;
+    public static List<String> ChairPos;
     public static double Yaw;
     public static double Pitch;
     public static double HeadYaw;
@@ -53,9 +54,15 @@ public class LmConfig {
     public static HashMap<Item, ArrayList<String>> ItemCmd = new HashMap<>();
     public static HashMap<String, Nbt> nbtMap = new HashMap<>();
     public static HashMap<Player, Integer> CommandCoolTick = new HashMap<>();
+    public static HashMap<Player, Integer> ChairCoolTick = new HashMap<>();
+    public static HashMap<Player, Integer> JJumpCoolTick = new HashMap<>();
+    public static final HashMap<Long, Long> onChair = new HashMap<>();
+    public static final HashMap<Long,String> BeSeated = new HashMap<>();
+    public static final HashMap<Long, Long> tagBlock = new HashMap<>();
+    public static final int[] faces = new int[]{90, 270, 180, 0, 90, 270, 180, 0};
 
     public static boolean loadConfig() {
-        LobbyManageMain.plugin.saveResource("config.yml");
+        LobbyManageMain.plugin.saveDefaultConfig();
         Config config = new Config(LobbyManageMain.ConfigPath + "/config.yml", 2);
         Language = config.getString("Language");
         LobbySpawn = config.getString("LobbySpawn");
@@ -71,6 +78,7 @@ public class LmConfig {
         QuitTitle = config.getString("QuitTitle");
         JoinConsoleCmd = config.getStringList("JoinConsoleCmd");
         JoinPlayerCmd = config.getStringList("JoinPlayerCmd");
+        ChairPos= config.getStringList("ChairPos");
         FixedTime = config.getInt("FixedTime");
         TimeSync = config.getBoolean("RealTime.TimeSync");
         Latitude= config.getString("RealTime.Latitude");
@@ -119,6 +127,7 @@ public class LmConfig {
         config.set("JoinAngle.Pitch", Pitch);
         config.set("TaskDelay",TaskDelay);
         config.set("EffectBlock",EffectBlock);
+        config.set("ChairPos", ChairPos);
         config.set("DisableWeather", DisableWeather);
         config.set("DisableHunger", DisableHunger);
         config.set("DisableDamage", DisableDamage);
@@ -143,10 +152,13 @@ public class LmConfig {
         return true;
     }
 
-    public static Position getLobbySpawn() {
+    public static boolean getLobbySpawn(Player player) {
         String[] split = LobbySpawn.split("&");
         String[] split1 = split[0].split(",");
-        return new Position(Double.parseDouble(split1[0]), Double.parseDouble(split1[1]), Double.parseDouble(split1[2]), LobbyManageMain.nkServer.getLevelByName(split[1]));
+        double yaw = Yaw != -9999 ? Yaw : player.yaw;
+        double pitch = Pitch != -9999 ? Pitch : player.pitch;
+        double headYaw = HeadYaw != -9999 ? HeadYaw : player.headYaw;
+        return player.teleport(new Location(Double.parseDouble(split1[0]), Double.parseDouble(split1[1]), Double.parseDouble(split1[2]),yaw,pitch,headYaw, LobbyManageMain.nkServer.getLevelByName(split[1])));
     }
 
     public static Level getLobbyLevel() {

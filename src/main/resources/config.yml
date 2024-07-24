@@ -57,16 +57,23 @@ FixedTime: 6000
 # 时间设置任务的执行间隔
 TaskDelay: 1200
 
+# 椅子位置
+# 需要在指定位置放置任意一个方块
+# 点击方块即可坐下
+ChairPos:
+  # x:y:z (int)
+  - "0:0:0"
+
 # 效果方块 [EffectId:Tick:Level]
 EffectBlock:
   "222": "1:60:2"
 
 #进入服务器视角
 JoinAngle:
-  # 为-9999.0则不启用
-  Yaw: 0.0
-  Pitch: 0.0
-  HeadYaw: 0.0
+  # 为-9999则不启用
+  Yaw: -9999
+  Pitch: -9999
+  HeadYaw: -9999
 
 # 禁止天气变化。
 DisableWeather: true

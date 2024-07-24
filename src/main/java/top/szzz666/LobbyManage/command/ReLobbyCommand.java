@@ -16,7 +16,7 @@ public class ReLobbyCommand extends Command {
    public boolean execute(CommandSender sender, String label, String[] args) {
       if (sender.isPlayer()) {
          Player player = (Player)sender;
-         player.teleport(LmConfig.getLobbySpawn());
+         LmConfig.getLobbySpawn(player);
          player.sendMessage(ReLobbyMessage);
       }
       return false;
