@@ -11,22 +11,19 @@ import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.level.WeatherChangeEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.item.Item;
-import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
-import cn.nukkit.level.Sound;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.AsyncTask;
 import top.szzz666.LobbyManage.LobbyManageMain;
 import top.szzz666.LobbyManage.tools.pluginUtil;
 
 import java.io.File;
-import java.util.Objects;
 
+import static io.netty.util.ResourceLeakDetector.getLevel;
 import static java.lang.Thread.sleep;
 import static top.szzz666.LobbyManage.LobbyManageMain.nkServer;
 import static top.szzz666.LobbyManage.LobbyManageMain.plugin;
 import static top.szzz666.LobbyManage.config.LmConfig.*;
-import static top.szzz666.LobbyManage.tools.pluginUtil.nkConsole;
 
 public class Listeners implements Listener {
 
@@ -49,8 +46,8 @@ public class Listeners implements Listener {
         }
         if (!JoinConsoleCmd.isEmpty()) {
             for (String cmd : JoinConsoleCmd) {
-                if (!cmd.isEmpty()){
-                LobbyManageMain.nkServer.dispatchCommand(LobbyManageMain.consoleObjects, cmd.replace("%player%", player.getName()));
+                if (!cmd.isEmpty()) {
+                    LobbyManageMain.nkServer.dispatchCommand(LobbyManageMain.consoleObjects, cmd.replace("%player%", player.getName()));
                 }
             }
         }
@@ -79,13 +76,14 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
-        if (DoubleJump && !player.isCreative() && Objects.equals(player.getLevel().getName(), LobbySpawn.split("&")[1])) {
+        if (DoubleJump && player.getLevel().equals(getLobbyLevel()) && !player.isCreative()) {
             int tick = nkServer.getTick();
             if (tick - JJumpCoolTick.getOrDefault(player, 0) <= 20) {
                 event.setCancelled(true);
                 player.setAllowFlight(false);
                 return;
             }
+
             JJumpCoolTick.put(player, tick);
             event.setCancelled(true);
             player.setAllowFlight(false);
@@ -97,7 +95,9 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-
+        if (DoubleJump) {
+            JJumpCoolTick.remove(player);
+        }
         if (!QuitMsg.isEmpty()) {
             event.setQuitMessage(QuitMsg.replace("%player%", player.getName()));
         }
@@ -134,18 +134,16 @@ public class Listeners implements Listener {
             if (VoidTp && player.getLocation().getY() < 0.0) {
                 player.teleport(getLobbySpawn());
             }
-            if (DoubleJump && !player.isCreative() && player.isOnGround() && !player.getAllowFlight() && Objects.equals(player.getLevel().getName(), LobbySpawn.split("&")[1])) {
-                player.setAllowFlight(true);
-            }else if (!DoubleJump && !player.isOnGround()){
-                player.setAllowFlight(false);
-//                event.setCancelled(true);
-            }
-            String id = String.valueOf(event.getTo().add(0, -1, 0).getLevelBlock().getId());
-            if (!EffectBlock.isEmpty() && EffectBlock.containsKey(id)) {
-                String[] effectBlock = EffectBlock.get(id).split(":");
-                player.addEffect(Effect.getEffect(Integer.parseInt(effectBlock[0])).setDuration(Integer.parseInt(effectBlock[1])).setAmplifier(Integer.parseInt(effectBlock[2])));
-            }
         }
+        if (DoubleJump && !player.isCreative() && getLevel().equals(getLobbyLevel()) && player.isOnGround() && !player.getAllowFlight()) {
+            player.setAllowFlight(true);
+        }
+        String id = String.valueOf(event.getTo().add(0, -1, 0).getLevelBlock().getId());
+        if (!EffectBlock.isEmpty() && EffectBlock.containsKey(id)) {
+            String[] effectBlock = EffectBlock.get(id).split(":");
+            player.addEffect(Effect.getEffect(Integer.parseInt(effectBlock[0])).setDuration(Integer.parseInt(effectBlock[1])).setAmplifier(Integer.parseInt(effectBlock[2])));
+        }
+
     }
 
     @EventHandler
