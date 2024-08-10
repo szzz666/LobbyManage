@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static top.szzz666.LobbyManage.tools.pluginUtil.nkConsole;
+
 public class LmConfig {
     public static String Language;
     public static String LobbySpawn;
@@ -33,12 +35,8 @@ public class LmConfig {
     public static List<String> JoinPlayerCmd;
     public static boolean DisableWeather;
     public static int FixedTime;
-    public static boolean TimeSync;
-    public static String TimeZone;
-    public static String Latitude;
-    public static String Longitude;
     public static int TaskDelay;
-    public static HashMap<String,String> EffectBlock;
+    public static HashMap<String, String> EffectBlock;
     public static boolean DisableHunger;
     public static boolean DisableDamage;
     public static boolean DisablePlace;
@@ -51,6 +49,10 @@ public class LmConfig {
     public static HashMap<Item, ArrayList<String>> ItemCmd = new HashMap<>();
     public static HashMap<String, Nbt> nbtMap = new HashMap<>();
     public static HashMap<Player, Integer> CommandCoolTick = new HashMap<>();
+    public static ArrayList<String> ProtectWorld = new ArrayList<>();
+    public static ArrayList<Level> ProtectLevel = new ArrayList<>();
+    public static boolean RealTime;
+    public static HashMap<Player, Integer> JJumpCoolTick = new HashMap<>();
 
     public static boolean loadConfig() {
         LobbyManageMain.plugin.saveResource("config.yml");
@@ -70,12 +72,8 @@ public class LmConfig {
         JoinConsoleCmd = config.getStringList("JoinConsoleCmd");
         JoinPlayerCmd = config.getStringList("JoinPlayerCmd");
         FixedTime = config.getInt("FixedTime");
-        TimeSync = config.getBoolean("RealTime.TimeSync");
-        TimeZone= config.getString("RealTime.TimeZone");
-        Latitude= config.getString("RealTime.Latitude");
-        Longitude= config.getString("RealTime.Longitude");
-        TaskDelay=config.getInt("TaskDelay");
-        EffectBlock=(HashMap<String, String>) config.get("EffectBlock");
+        TaskDelay = config.getInt("TaskDelay");
+        EffectBlock = (HashMap<String, String>) config.get("EffectBlock");
         DisableWeather = config.getBoolean("DisableWeather");
         DisableHunger = config.getBoolean("DisableHunger");
         DisableDamage = config.getBoolean("DisableDamage");
@@ -86,6 +84,9 @@ public class LmConfig {
         DisableBlockUpdate = config.getBoolean("DisableBlockUpdate");
         DisableItemDrop = config.getBoolean("DisableItemDrop");
         ItemCmdStr = (HashMap<String, ArrayList<String>>) config.get("ItemCmd");
+        ProtectWorld = (ArrayList<String>) config.get("ProtectWorld");
+        RealTime = config.getBoolean("RealTime");
+        addProtectLevel();
         config.save();
         return true;
     }
@@ -107,12 +108,8 @@ public class LmConfig {
         config.set("JoinConsoleCmd", JoinConsoleCmd);
         config.set("JoinPlayerCmd", JoinPlayerCmd);
         config.set("FixedTime", FixedTime);
-        config.set("RealTime.TimeSync", TimeSync);
-        config.set("RealTime.TimeZone", TimeZone);
-        config.set("RealTime.Latitude", Latitude);
-        config.set("RealTime.Longitude", Longitude);
-        config.set("TaskDelay",TaskDelay);
-        config.set("EffectBlock",EffectBlock);
+        config.set("TaskDelay", TaskDelay);
+        config.set("EffectBlock", EffectBlock);
         config.set("DisableWeather", DisableWeather);
         config.set("DisableHunger", DisableHunger);
         config.set("DisableDamage", DisableDamage);
@@ -122,6 +119,8 @@ public class LmConfig {
         config.set("DoubleJump", DoubleJump);
         config.set("DisableBlockUpdate", DisableBlockUpdate);
         config.set("DisableItemDrop", DisableItemDrop);
+        config.set("ProtectWorld", ProtectWorld);
+        config.set("RealTime", RealTime);
         config.save();
         return true;
     }
@@ -133,7 +132,6 @@ public class LmConfig {
         Type type = (new TypeToken<HashMap<String, Nbt>>() {
         }).getType();
         nbtMap = gson.fromJson(nbtJson, type);
-        pluginUtil.nkConsole(nbtMap.get("nbt1").toString());
         return true;
     }
 
@@ -145,5 +143,16 @@ public class LmConfig {
 
     public static Level getLobbyLevel() {
         return LobbyManageMain.nkServer.getLevelByName(LobbySpawn.split("&")[1]);
+    }
+
+    public static void addProtectLevel() {
+        if (!ProtectLevel.contains(getLobbyLevel()))
+            ProtectLevel.add(getLobbyLevel());
+        for (String s : ProtectWorld) {
+            if (!ProtectLevel.contains(LobbyManageMain.nkServer.getLevelByName(s))) {
+                ProtectLevel.add(LobbyManageMain.nkServer.getLevelByName(s));
+            }
+        }
+        nkConsole(ProtectLevel.toString());
     }
 }

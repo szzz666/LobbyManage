@@ -9,9 +9,10 @@ import top.szzz666.LobbyManage.command.ReLobbyCommand;
 import top.szzz666.LobbyManage.config.LangConfig;
 import top.szzz666.LobbyManage.config.LmConfig;
 import top.szzz666.LobbyManage.event.Listeners;
+import top.szzz666.LobbyManage.task.TimeTask;
 import top.szzz666.LobbyManage.tools.pluginUtil;
 
-import static top.szzz666.LobbyManage.tools.pluginUtil.setupTime;
+
 
 public class LobbyManageMain extends PluginBase {
     public static Plugin plugin;
@@ -31,10 +32,11 @@ public class LobbyManageMain extends PluginBase {
     }
 
     public void onEnable() {
+        LmConfig.addProtectLevel();
         this.getServer().getPluginManager().registerEvents(new Listeners(), this);
         this.getServer().getCommandMap().register(this.getName(), new ReLobbyCommand());
         this.getServer().getCommandMap().register(this.getName(), new OpFormCommand());
-        setupTime();
+        new TimeTask();
         pluginUtil.nkConsole("&bLobbyManage插件开启");
     }
 

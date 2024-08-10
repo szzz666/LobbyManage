@@ -12,6 +12,7 @@ import cn.nukkit.event.level.WeatherChangeEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Level;
+import cn.nukkit.level.Position;
 import cn.nukkit.level.Sound;
 import cn.nukkit.potion.Effect;
 import cn.nukkit.scheduler.AsyncTask;
@@ -19,11 +20,13 @@ import top.szzz666.LobbyManage.LobbyManageMain;
 import top.szzz666.LobbyManage.tools.pluginUtil;
 
 import java.io.File;
+import java.util.Objects;
 
 import static java.lang.Thread.sleep;
 import static top.szzz666.LobbyManage.LobbyManageMain.nkServer;
 import static top.szzz666.LobbyManage.LobbyManageMain.plugin;
 import static top.szzz666.LobbyManage.config.LmConfig.*;
+import static top.szzz666.LobbyManage.tools.pluginUtil.nkConsole;
 
 public class Listeners implements Listener {
 
@@ -46,24 +49,28 @@ public class Listeners implements Listener {
         }
         if (!JoinConsoleCmd.isEmpty()) {
             for (String cmd : JoinConsoleCmd) {
+                if (!cmd.isEmpty()){
                 LobbyManageMain.nkServer.dispatchCommand(LobbyManageMain.consoleObjects, cmd.replace("%player%", player.getName()));
+                }
             }
         }
         if (!JoinPlayerCmd.isEmpty()) {
             for (String cmd : JoinPlayerCmd) {
-                if (cmd.startsWith("op#")) {
-                    cmd = cmd.replace("op#", "");
-                    if(!player.isOp()) {
-                        try {
-                            player.setOp(true);
-                            LobbyManageMain.nkServer.dispatchCommand(player, cmd.replace("%player%", player.getName()));
-                        } finally {
-                            player.setOp(false);
+                if (!cmd.isEmpty()) {
+                    if (cmd.startsWith("op#")) {
+                        cmd = cmd.replace("op#", "");
+                        if (!player.isOp()) {
+                            try {
+                                player.setOp(true);
+                                LobbyManageMain.nkServer.dispatchCommand(player, cmd.replace("%player%", player.getName()));
+                            } finally {
+                                player.setOp(false);
+                            }
+                            continue;
                         }
-                        continue;
                     }
+                    LobbyManageMain.nkServer.dispatchCommand(player, cmd.replace("%player%", player.getName()));
                 }
-                LobbyManageMain.nkServer.dispatchCommand(player, cmd.replace("%player%", player.getName()));
             }
         }
 
@@ -72,12 +79,17 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
-        if (DoubleJump && player.getLevel().equals(getLobbyLevel()) && !player.isCreative()) {
+        if (DoubleJump && !player.isCreative() && Objects.equals(player.getLevel().getName(), LobbySpawn.split("&")[1])) {
+            int tick = nkServer.getTick();
+            if (tick - JJumpCoolTick.getOrDefault(player, 0) <= 20) {
+                event.setCancelled(true);
+                player.setAllowFlight(false);
+                return;
+            }
+            JJumpCoolTick.put(player, tick);
             event.setCancelled(true);
             player.setAllowFlight(false);
             player.setMotion(player.getLocation().getDirectionVector().multiply(2).add(0.0, 0.8, 0.0));
-            Level level = player.getLevel();
-            level.addSound(player.getLocation(), Sound.MOB_ENDERDRAGON_FLAP);
         }
     }
 
@@ -96,7 +108,7 @@ public class Listeners implements Listener {
             }
         }
         if (QuitClear) {
-            File me = new File(plugin.getDataFolder().getParentFile().getParent() + "\\players\\" + player.getUniqueId() + ".dat");
+            File me = new File(plugin.getDataFolder().getParentFile().getParent() + "/players/" + player.getUniqueId() + ".dat");
             if (me.exists()) {
                 nkServer.getScheduler().scheduleAsyncTask(plugin, new AsyncTask() {
                     @Override
@@ -118,12 +130,15 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (player.getLevel().equals(getLobbyLevel())) {
-            if (VoidTp && player.getLocation().getY() < -30.0) {
+        if (ProtectLevel.contains(player.getLevel())) {
+            if (VoidTp && player.getLocation().getY() < 0.0) {
                 player.teleport(getLobbySpawn());
             }
-            if (DoubleJump && !player.isCreative() && player.isOnGround() && !player.getAllowFlight()) {
+            if (DoubleJump && !player.isCreative() && player.isOnGround() && !player.getAllowFlight() && Objects.equals(player.getLevel().getName(), LobbySpawn.split("&")[1])) {
                 player.setAllowFlight(true);
+            }else if (!DoubleJump && !player.isOnGround()){
+                player.setAllowFlight(false);
+//                event.setCancelled(true);
             }
             String id = String.valueOf(event.getTo().add(0, -1, 0).getLevelBlock().getId());
             if (!EffectBlock.isEmpty() && EffectBlock.containsKey(id)) {
@@ -135,7 +150,7 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void onWeatherChange(WeatherChangeEvent event) {
-        if (DisableWeather && event.getLevel().equals(getLobbyLevel())) {
+        if (DisableWeather && ProtectLevel.contains(event.getLevel())) {
             event.setCancelled();
         }
 
@@ -143,7 +158,7 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void playerHunger(PlayerFoodLevelChangeEvent event) {
-        if (DisableHunger && event.getPlayer().getLevel().equals(getLobbyLevel())) {
+        if (DisableHunger && ProtectLevel.contains(event.getPlayer().getLevel())) {
             event.setCancelled();
         }
 
@@ -152,7 +167,8 @@ public class Listeners implements Listener {
     @EventHandler
     public void playerTp(PlayerTeleportEvent event) {
         Player player = event.getPlayer();
-        if (event.getTo().level.equals(getLobbyLevel())) {
+        Position newPosition = event.getTo();
+        if (ProtectLevel.contains(newPosition.getLevel())) {
             if (!ItemCmdStr.isEmpty()) {
                 pluginUtil.JoinItem(ItemCmdStr, player);
             }
@@ -161,7 +177,7 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void playerDamage(EntityDamageEvent event) {
-        if (DisableDamage && event.getEntity() instanceof Player && event.getEntity().getLevel().equals(getLobbyLevel())) {
+        if (DisableDamage && event.getEntity() instanceof Player && ProtectLevel.contains(event.getEntity().getLevel())) {
             event.setCancelled();
         }
 
@@ -170,7 +186,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if (DisableBreak && player.getLevel().equals(getLobbyLevel()) && (!player.isOp() || ConstraintOp)) {
+        if (DisableBreak && ProtectLevel.contains(player.getLevel()) && (!player.isOp() || ConstraintOp)) {
             event.setCancelled();
         }
 
@@ -179,7 +195,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if (DisablePlace && player.getLevel().equals(getLobbyLevel()) && (!player.isOp() || ConstraintOp)) {
+        if (DisablePlace && ProtectLevel.contains(player.getLevel()) && (!player.isOp() || ConstraintOp)) {
             event.setCancelled();
         }
 
@@ -205,7 +221,7 @@ public class Listeners implements Listener {
                     cmd = cmd.replace("%player%", player.getName());
                     if (cmd.startsWith("op#")) {
                         cmd = cmd.replace("op#", "");
-                        if(!player.isOp()) {
+                        if (!player.isOp()) {
                             try {
                                 player.setOp(true);
                                 nkServer.dispatchCommand(player, cmd);
@@ -223,7 +239,7 @@ public class Listeners implements Listener {
                 }
             }
         }
-        if (DisableInteract && event.getPlayer().getLevel().equals(getLobbyLevel())) {
+        if (DisableInteract && ProtectLevel.contains(event.getPlayer().getLevel())) {
             if (!player.isOp() || ConstraintOp) {
                 event.setCancelled();
             }
@@ -232,7 +248,7 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void onBlockUpdate(BlockUpdateEvent event) {
-        if (DisableBlockUpdate && event.getBlock().level.equals(getLobbyLevel())) {
+        if (DisableBlockUpdate && ProtectLevel.contains(event.getBlock().getLevel())) {
             event.setCancelled();
         }
 
@@ -241,7 +257,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerDropItem(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if (DisableItemDrop && player.getLevel().equals(getLobbyLevel()) && (!player.isOp() || ConstraintOp)) {
+        if (DisableItemDrop && ProtectLevel.contains(player.getLevel()) && (!player.isOp() || ConstraintOp)) {
             event.setCancelled();
         }
 
