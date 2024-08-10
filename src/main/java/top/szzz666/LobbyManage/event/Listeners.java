@@ -9,6 +9,7 @@ import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.block.BlockUpdateEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.level.WeatherChangeEvent;
+import cn.nukkit.event.level.WeatherEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
@@ -146,10 +147,17 @@ public class Listeners implements Listener {
 
     }
 
+//    @EventHandler
+//    public void onWeatherChange(WeatherChangeEvent event) {
+//        if (DisableWeather && ProtectLevel.contains(event.getLevel())) {
+//            event.setCancelled();
+//        }
+//
+//    }
     @EventHandler
-    public void onWeatherChange(WeatherChangeEvent event) {
+    public void onWeather(WeatherEvent event) {
         if (DisableWeather && ProtectLevel.contains(event.getLevel())) {
-            event.setCancelled();
+            event.setCancelled(true);
         }
 
     }
