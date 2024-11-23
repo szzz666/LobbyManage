@@ -12,6 +12,7 @@ import top.szzz666.LobbyManage.event.Listeners;
 import top.szzz666.LobbyManage.task.TimeTask;
 import top.szzz666.LobbyManage.tools.pluginUtil;
 
+import static top.szzz666.LobbyManage.tools.pluginUtil.ItemCmd;
 
 
 public class LobbyManageMain extends PluginBase {
@@ -37,6 +38,7 @@ public class LobbyManageMain extends PluginBase {
         this.getServer().getCommandMap().register(this.getName(), new ReLobbyCommand());
         this.getServer().getCommandMap().register(this.getName(), new OpFormCommand());
         new TimeTask();
+        ItemCmd();
         pluginUtil.nkConsole("&bLobbyManage插件开启");
     }
 

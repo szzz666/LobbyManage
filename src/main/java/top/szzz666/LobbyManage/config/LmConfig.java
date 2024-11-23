@@ -46,7 +46,7 @@ public class LmConfig {
     public static boolean DisableBlockUpdate;
     public static boolean DisableItemDrop;
     public static HashMap<String, ArrayList<String>> ItemCmdStr = new HashMap<>();
-    public static HashMap<Item, ArrayList<String>> ItemCmd = new HashMap<>();
+    public static  HashMap<Item, ArrayList<String>> ItemCmd = new HashMap<>();
     public static HashMap<String, Nbt> nbtMap = new HashMap<>();
     public static HashMap<Player, Integer> CommandCoolTick = new HashMap<>();
     public static ArrayList<String> ProtectWorld = new ArrayList<>();

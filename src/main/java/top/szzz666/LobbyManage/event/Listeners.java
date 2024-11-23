@@ -9,12 +9,11 @@ import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.block.BlockUpdateEvent;
 import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.level.WeatherChangeEvent;
-import cn.nukkit.event.level.WeatherEvent;
 import cn.nukkit.event.player.*;
 import cn.nukkit.item.Item;
 import cn.nukkit.level.Position;
 import cn.nukkit.potion.Effect;
-import cn.nukkit.scheduler.AsyncTask;
+import cn.nukkit.scheduler.Task;
 import top.szzz666.LobbyManage.LobbyManageMain;
 import top.szzz666.LobbyManage.tools.pluginUtil;
 
@@ -109,21 +108,20 @@ public class Listeners implements Listener {
             }
         }
         if (QuitClear) {
-            File me = new File(plugin.getDataFolder().getParentFile().getParent() + "/players/" + player.getUniqueId() + ".dat");
-            if (me.exists()) {
-                nkServer.getScheduler().scheduleAsyncTask(plugin, new AsyncTask() {
-                    @Override
-                    public void onRun() {
+            nkServer.getScheduler().scheduleDelayedTask(plugin, new Task() {
+                @Override
+                public void onRun(int i) {
+                    File me = new File(plugin.getDataFolder().getParentFile().getParent() + "/players/" + player.getUniqueId() + ".dat");
+                    if (me.exists()) {
                         try {
                             sleep(250);
-                        } catch (InterruptedException e) {
-                            throw new RuntimeException(e);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                         me.delete();
                     }
-                });
-
-            }
+                }
+            }, 250, true);
         }
         CommandCoolTick.remove(player);
     }
@@ -147,20 +145,14 @@ public class Listeners implements Listener {
 
     }
 
-//    @EventHandler
-//    public void onWeatherChange(WeatherChangeEvent event) {
-//        if (DisableWeather && ProtectLevel.contains(event.getLevel())) {
-//            event.setCancelled();
-//        }
-//
-//    }
     @EventHandler
-    public void onWeather(WeatherEvent event) {
+    public void onWeatherChange(WeatherChangeEvent event) {
         if (DisableWeather && ProtectLevel.contains(event.getLevel())) {
             event.setCancelled(true);
         }
 
     }
+
 
     @EventHandler
     public void playerHunger(PlayerFoodLevelChangeEvent event) {

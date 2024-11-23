@@ -18,8 +18,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static top.szzz666.LobbyManage.config.LmConfig.ItemCmdStr;
+
 
 public class pluginUtil {
+    public static void ItemCmd() {
+        HashMap<String, ArrayList<String>> itemCmd = ItemCmdStr;
+        if (!itemCmd.isEmpty()) {
+            for (String key : itemCmd.keySet()) {
+                String[] split = key.split(":");
+                Item item = Item.get(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]));
+                String nbtString;
+                if (split[4].split("=")[0].equals("nbt")) {
+                    nbtString = split[4].replace("nbt=", "");
+                    addNBTToItem(nbtString, item);
+                } else {
+                    nbtString = split[4].replace("name=", "");
+                    item.setCustomName(nbtString);
+                }
+                ArrayList<String> cmd = itemCmd.get(key);
+                LmConfig.ItemCmd.put(item, cmd);
+            }
+        }
+    }
 
     //获得对应现实的游戏时间
     public static int getGameTimeFromRealTime() {
@@ -45,10 +66,9 @@ public class pluginUtil {
                     nbtString = split[4].replace("name=", "");
                     item.setCustomName(nbtString);
                 }
-
                 player.getInventory().setItem(Integer.parseInt(split[3]), item);
-                ArrayList<String> cmd = itemCmd.get(key);
-                LmConfig.ItemCmd.put(item, cmd);
+//                ArrayList<String> cmd = itemCmd.get(key);
+//                LmConfig.ItemCmd.put(item, cmd);
             }
         }
 
