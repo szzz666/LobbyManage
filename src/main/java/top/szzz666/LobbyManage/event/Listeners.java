@@ -37,7 +37,6 @@ public class Listeners implements Listener {
             if (!ItemCmdStr.isEmpty() & !JoinTp) {
                 pluginUtil.JoinItem(ItemCmdStr, player);
             }
-
             player.teleport(getLobbySpawn());
             if (!JoinMsg.isEmpty()) {
                 event.setJoinMessage(QuitMsg.replace("%player%", player.getName()));
