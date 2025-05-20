@@ -1,6 +1,7 @@
 package top.szzz666.LobbyManage.tools;
 
 import cn.nukkit.Player;
+import cn.nukkit.command.CommandSender;
 import cn.nukkit.item.Item;
 import cn.nukkit.item.enchantment.Enchantment;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -18,10 +19,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static top.szzz666.LobbyManage.LobbyManageMain.nkServer;
 import static top.szzz666.LobbyManage.config.LmConfig.ItemCmdStr;
 
 
 public class pluginUtil {
+    public static void multCmd(CommandSender sender, String command) {
+        nkServer.getCommandMap().dispatch(sender, command);
+    }
     public static void ItemCmd() {
         HashMap<String, ArrayList<String>> itemCmd = ItemCmdStr;
         if (!itemCmd.isEmpty()) {

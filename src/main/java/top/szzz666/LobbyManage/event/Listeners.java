@@ -24,53 +24,54 @@ import static java.lang.Thread.sleep;
 import static top.szzz666.LobbyManage.LobbyManageMain.nkServer;
 import static top.szzz666.LobbyManage.LobbyManageMain.plugin;
 import static top.szzz666.LobbyManage.config.LmConfig.*;
+import static top.szzz666.LobbyManage.tools.pluginUtil.multCmd;
+import static top.szzz666.LobbyManage.tools.taskUtil.Async;
 
 public class Listeners implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        CommandCoolTick.put(player, LobbyManageMain.nkServer.getTick());
-        if (!ItemCmdStr.isEmpty() & !JoinTp) {
-            pluginUtil.JoinItem(ItemCmdStr, player);
-        }
+        Async(() -> {
+            Player player = event.getPlayer();
+            CommandCoolTick.put(player, LobbyManageMain.nkServer.getTick());
+            if (!ItemCmdStr.isEmpty() & !JoinTp) {
+                pluginUtil.JoinItem(ItemCmdStr, player);
+            }
 
-        player.teleport(getLobbySpawn());
-        if (!JoinMsg.isEmpty()) {
-            event.setJoinMessage(JoinMsg.replace("%player%", player.getName()));
-        }
-        if (!JoinTitle.isEmpty()) {
-            for (Player p : Server.getInstance().getOnlinePlayers().values()) {
-                p.sendTitle(JoinTitle.split("&")[0].replace("%player%", player.getName()), JoinTitle.split("&")[1].replace("%player%", player.getName()), Integer.parseInt(JoinTitle.split("&")[2].split(",")[0]), Integer.parseInt(JoinTitle.split("&")[2].split(",")[1]), Integer.parseInt(JoinTitle.split("&")[2].split(",")[2]));
+            player.teleport(getLobbySpawn());
+            if (!JoinMsg.isEmpty()) {
+                event.setJoinMessage(QuitMsg.replace("%player%", player.getName()));
             }
-        }
-        if (!JoinConsoleCmd.isEmpty()) {
-            for (String cmd : JoinConsoleCmd) {
-                if (!cmd.isEmpty()) {
-                    LobbyManageMain.nkServer.dispatchCommand(LobbyManageMain.consoleObjects, cmd.replace("%player%", player.getName()));
-                }
+            if (!JoinTitle.isEmpty()) {
+                player.sendTitle(JoinTitle.split("&")[0].replace("%player%", player.getName()), JoinTitle.split("&")[1].replace("%player%", player.getName()), Integer.parseInt(JoinTitle.split("&")[2].split(",")[0]), Integer.parseInt(JoinTitle.split("&")[2].split(",")[1]), Integer.parseInt(JoinTitle.split("&")[2].split(",")[2]));
             }
-        }
-        if (!JoinPlayerCmd.isEmpty()) {
-            for (String cmd : JoinPlayerCmd) {
-                if (!cmd.isEmpty()) {
-                    if (cmd.startsWith("op#")) {
-                        cmd = cmd.replace("op#", "");
-                        if (!player.isOp()) {
-                            try {
-                                player.setOp(true);
-                                LobbyManageMain.nkServer.dispatchCommand(player, cmd.replace("%player%", player.getName()));
-                            } finally {
-                                player.setOp(false);
-                            }
-                            continue;
-                        }
+            if (!JoinConsoleCmd.isEmpty()) {
+                for (String cmd : JoinConsoleCmd) {
+                    if (!cmd.isEmpty()) {
+                        LobbyManageMain.nkServer.dispatchCommand(LobbyManageMain.consoleObjects, cmd.replace("%player%", player.getName()));
                     }
-                    LobbyManageMain.nkServer.dispatchCommand(player, cmd.replace("%player%", player.getName()));
                 }
             }
-        }
-
+            if (!JoinPlayerCmd.isEmpty()) {
+                for (String cmd : JoinPlayerCmd) {
+                    if (!cmd.isEmpty()) {
+                        if (cmd.startsWith("op#")) {
+                            cmd = cmd.replace("op#", "");
+                            if (!player.isOp()) {
+                                try {
+                                    player.setOp(true);
+                                    multCmd(player, cmd.replace("%player%", player.getName()));
+                                } finally {
+                                    player.setOp(false);
+                                }
+                                continue;
+                            }
+                        }
+                        multCmd(player, cmd.replace("%player%", player.getName()));
+                    }
+                }
+            }
+        });
     }
 
     @EventHandler
@@ -83,7 +84,6 @@ public class Listeners implements Listener {
                 player.setAllowFlight(false);
                 return;
             }
-
             JJumpCoolTick.put(player, tick);
             event.setCancelled(true);
             player.setAllowFlight(false);
@@ -94,63 +94,65 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        Player player = event.getPlayer();
-        if (DoubleJump) {
-            JJumpCoolTick.remove(player);
-        }
-        if (!QuitMsg.isEmpty()) {
-            event.setQuitMessage(QuitMsg.replace("%player%", player.getName()));
-        }
-
-        if (!QuitTitle.isEmpty()) {
-            for (Player p : Server.getInstance().getOnlinePlayers().values()) {
-                p.sendTitle(QuitTitle.split("&")[0].replace("%player%", player.getName()), QuitTitle.split("&")[1].replace("%player%", player.getName()), Integer.parseInt(QuitTitle.split("&")[2].split(",")[0]), Integer.parseInt(QuitTitle.split("&")[2].split(",")[1]), Integer.parseInt(QuitTitle.split("&")[2].split(",")[2]));
+        Async(() -> {
+            Player player = event.getPlayer();
+            if (DoubleJump) {
+                JJumpCoolTick.remove(player);
             }
-        }
-        if (QuitClear) {
-            nkServer.getScheduler().scheduleDelayedTask(plugin, new Task() {
-                @Override
-                public void onRun(int i) {
-                    File me = new File(plugin.getDataFolder().getParentFile().getParent() + "/players/" + player.getUniqueId() + ".dat");
-                    if (me.exists()) {
-                        try {
-                            sleep(250);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        me.delete();
-                    }
+            if (!QuitMsg.isEmpty()) {
+                event.setQuitMessage(QuitMsg.replace("%player%", player.getName()));
+            }
+
+            if (!QuitTitle.isEmpty()) {
+                for (Player p : Server.getInstance().getOnlinePlayers().values()) {
+                    p.sendTitle(QuitTitle.split("&")[0].replace("%player%", player.getName()), QuitTitle.split("&")[1].replace("%player%", player.getName()), Integer.parseInt(QuitTitle.split("&")[2].split(",")[0]), Integer.parseInt(QuitTitle.split("&")[2].split(",")[1]), Integer.parseInt(QuitTitle.split("&")[2].split(",")[2]));
                 }
-            }, 250, true);
-        }
-        CommandCoolTick.remove(player);
+            }
+            if (QuitClear) {
+                nkServer.getScheduler().scheduleDelayedTask(plugin, new Task() {
+                    @Override
+                    public void onRun(int i) {
+                        File me = new File(plugin.getDataFolder().getParentFile().getParent() + "/players/" + player.getUniqueId() + ".dat");
+                        if (me.exists()) {
+                            try {
+                                sleep(250);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            me.delete();
+                        }
+                    }
+                }, 250, true);
+            }
+            CommandCoolTick.remove(player);
+        });
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        Player player = event.getPlayer();
-        if (ProtectLevel.contains(player.getLevel())) {
-            if (VoidTp && player.getLocation().getY() < 0.0) {
-                player.teleport(getLobbySpawn());
+        Async(() -> {
+            Player player = event.getPlayer();
+            if (ProtectLevel.contains(player.getLevel())) {
+                if (VoidTp && player.getLocation().getY() < 0.0) {
+                    player.teleport(getLobbySpawn());
+                }
             }
-        }
-        if (DoubleJump && !player.isCreative() && getLevel().equals(getLobbyLevel()) && player.isOnGround() && !player.getAllowFlight()) {
-            player.setAllowFlight(true);
-        }
-        String id = String.valueOf(event.getTo().add(0, -1, 0).getLevelBlock().getId());
-        if (!EffectBlock.isEmpty() && EffectBlock.containsKey(id)) {
-            String[] effectBlock = EffectBlock.get(id).split(":");
-            player.addEffect(Effect.getEffect(Integer.parseInt(effectBlock[0])).setDuration(Integer.parseInt(effectBlock[1])).setAmplifier(Integer.parseInt(effectBlock[2])));
-        }
-
+            if (DoubleJump && !player.isCreative() && getLevel().equals(getLobbyLevel()) && player.isOnGround() && !player.getAllowFlight()) {
+                player.setAllowFlight(true);
+            }
+            String id = String.valueOf(event.getTo().add(0, -1, 0).getLevelBlock().getId());
+            if (!EffectBlock.isEmpty() && EffectBlock.containsKey(id)) {
+                String[] effectBlock = EffectBlock.get(id).split(":");
+                player.addEffect(Effect.getEffect(Integer.parseInt(effectBlock[0])).setDuration(Integer.parseInt(effectBlock[1])).setAmplifier(Integer.parseInt(effectBlock[2])));
+            }
+        });
     }
 
     @EventHandler
     public void onWeatherChange(WeatherChangeEvent event) {
         if (DisableWeather && ProtectLevel.contains(event.getLevel())) {
-            event.setCancelled(true);
+            event.setCancelled();
         }
-
     }
 
 
@@ -164,13 +166,15 @@ public class Listeners implements Listener {
 
     @EventHandler
     public void playerTp(PlayerTeleportEvent event) {
-        Player player = event.getPlayer();
-        Position newPosition = event.getTo();
-        if (ProtectLevel.contains(newPosition.getLevel())) {
-            if (!ItemCmdStr.isEmpty()) {
-                pluginUtil.JoinItem(ItemCmdStr, player);
+        Async(() -> {
+            Player player = event.getPlayer();
+            Position newPosition = event.getTo();
+            if (ProtectLevel.contains(newPosition.getLevel())) {
+                if (!ItemCmdStr.isEmpty()) {
+                    pluginUtil.JoinItem(ItemCmdStr, player);
+                }
             }
-        }
+        });
     }
 
     @EventHandler
@@ -178,7 +182,6 @@ public class Listeners implements Listener {
         if (DisableDamage && event.getEntity() instanceof Player && ProtectLevel.contains(event.getEntity().getLevel())) {
             event.setCancelled();
         }
-
     }
 
     @EventHandler
@@ -187,7 +190,6 @@ public class Listeners implements Listener {
         if (DisableBreak && ProtectLevel.contains(player.getLevel()) && (!player.isOp() || ConstraintOp)) {
             event.setCancelled();
         }
-
     }
 
     @EventHandler
@@ -196,47 +198,48 @@ public class Listeners implements Listener {
         if (DisablePlace && ProtectLevel.contains(player.getLevel()) && (!player.isOp() || ConstraintOp)) {
             event.setCancelled();
         }
-
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        if (!ItemCmd.isEmpty()) {
-            Item itemV = null;
-            for (Item item : ItemCmd.keySet()) {
-                if (item.equals(player.getInventory().getItemInHand())) {
-                    itemV = item;
+        Async(() -> {
+            if (!ItemCmd.isEmpty()) {
+                Item itemV = null;
+                for (Item item : ItemCmd.keySet()) {
+                    if (item.equals(player.getInventory().getItemInHand())) {
+                        itemV = item;
+                    }
                 }
-            }
-            if (itemV != null) {
-                int tick = nkServer.getTick();
-                if (tick - CommandCoolTick.getOrDefault(player, 0) <= 10) {
-                    return;
-                }
-                CommandCoolTick.put(player, tick);
-                for (String cmd : ItemCmd.get(itemV)) {
-                    cmd = cmd.replace("%player%", player.getName());
-                    if (cmd.startsWith("op#")) {
-                        cmd = cmd.replace("op#", "");
-                        if (!player.isOp()) {
-                            try {
-                                player.setOp(true);
-                                nkServer.dispatchCommand(player, cmd);
-                            } finally {
-                                player.setOp(false);
+                if (itemV != null) {
+                    int tick = nkServer.getTick();
+                    if (tick - CommandCoolTick.getOrDefault(player, 0) <= 10) {
+                        return;
+                    }
+                    CommandCoolTick.put(player, tick);
+                    for (String cmd : ItemCmd.get(itemV)) {
+                        cmd = cmd.replace("%player%", player.getName());
+                        if (cmd.startsWith("op#")) {
+                            cmd = cmd.replace("op#", "");
+                            if (!player.isOp()) {
+                                try {
+                                    player.setOp(true);
+                                    multCmd(player, cmd);
+                                } finally {
+                                    player.setOp(false);
+                                }
+                                continue;
                             }
+                        } else if (cmd.startsWith("console#")) {
+                            cmd = cmd.replace("console#", "");
+                            multCmd(player, cmd);
                             continue;
                         }
-                    } else if (cmd.startsWith("console#")) {
-                        cmd = cmd.replace("console#", "");
-                        nkServer.dispatchCommand(nkServer.getConsoleSender(), cmd);
-                        continue;
+                        multCmd(player, cmd);
                     }
-                    nkServer.dispatchCommand(player, cmd);
                 }
             }
-        }
+        });
         if (DisableInteract && ProtectLevel.contains(event.getPlayer().getLevel())) {
             if (!player.isOp() || ConstraintOp) {
                 event.setCancelled();
@@ -249,7 +252,6 @@ public class Listeners implements Listener {
         if (DisableBlockUpdate && ProtectLevel.contains(event.getBlock().getLevel())) {
             event.setCancelled();
         }
-
     }
 
     @EventHandler
@@ -258,6 +260,5 @@ public class Listeners implements Listener {
         if (DisableItemDrop && ProtectLevel.contains(player.getLevel()) && (!player.isOp() || ConstraintOp)) {
             event.setCancelled();
         }
-
     }
 }
