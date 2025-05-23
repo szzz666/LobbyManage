@@ -207,6 +207,9 @@ public class Listeners implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Async(() -> {
+            if(player == null || !player.isOnline()){
+                return;
+            }
             if (!ItemCmd.isEmpty()) {
                 Item itemV = null;
                 for (Item item : ItemCmd.keySet()) {
