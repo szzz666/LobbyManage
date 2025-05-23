@@ -76,7 +76,7 @@ public class Listeners implements Listener {
     @EventHandler
     public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
-        if (DoubleJump && player.getLevel().equals(getLobbyLevel()) && !player.isCreative()) {
+        if (DoubleJump && player.getLevel().equals(getLobbyLevel()) && !(player.getGamemode() == 1 || player.getGamemode() == 3)) {
             int tick = nkServer.getTick();
             if (tick - JJumpCoolTick.getOrDefault(player, 0) <= 10) {
                 event.setCancelled(true);
@@ -88,7 +88,7 @@ public class Listeners implements Listener {
             player.setMotion(player.getLocation().getDirectionVector().multiply(2).add(0.0, 0.8, 0.0));
             cancelFlight(player);
         }
-        if (DoubleJump && !player.getLevel().equals(getLobbyLevel())) {
+        if (DoubleJump && !player.getLevel().equals(getLobbyLevel()) && !(player.getGamemode() == 1 || player.getGamemode() == 3)) {
             event.setCancelled(true);
             cancelFlight(player);
         }
@@ -140,7 +140,7 @@ public class Listeners implements Listener {
                     player.teleport(getLobbySpawn());
                 }
             }
-            if (DoubleJump && !player.isCreative() && player.getLevel().equals(getLobbyLevel()) && player.isOnGround() && !player.getAllowFlight()) {
+            if (DoubleJump && !(player.getGamemode() == 1 || player.getGamemode() == 3) && player.getLevel().equals(getLobbyLevel()) && player.isOnGround() && !player.getAllowFlight()) {
                 player.setAllowFlight(true);
             }
             String id = String.valueOf(event.getTo().add(0, -1, 0).getLevelBlock().getId());
