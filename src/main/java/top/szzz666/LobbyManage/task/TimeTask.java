@@ -12,6 +12,9 @@ public class TimeTask {
     public TimeTask() {
         nkServer.getScheduler().scheduleRepeatingTask(plugin, () -> {
             Level lobbyLevel = getLobbyLevel();
+            if (lobbyLevel == null){
+                return;
+            }
             if(RealTime){
                 lobbyLevel.setTime(getGameTimeFromRealTime());
                 return;

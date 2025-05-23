@@ -19,11 +19,11 @@ import top.szzz666.LobbyManage.tools.pluginUtil;
 
 import java.io.File;
 
-import static io.netty.util.ResourceLeakDetector.getLevel;
 import static java.lang.Thread.sleep;
 import static top.szzz666.LobbyManage.LobbyManageMain.nkServer;
 import static top.szzz666.LobbyManage.LobbyManageMain.plugin;
 import static top.szzz666.LobbyManage.config.LmConfig.*;
+import static top.szzz666.LobbyManage.tools.pluginUtil.cancelFlight;
 import static top.szzz666.LobbyManage.tools.pluginUtil.multCmd;
 import static top.szzz666.LobbyManage.tools.taskUtil.Async;
 
@@ -47,7 +47,7 @@ public class Listeners implements Listener {
             if (!JoinConsoleCmd.isEmpty()) {
                 for (String cmd : JoinConsoleCmd) {
                     if (!cmd.isEmpty()) {
-                        LobbyManageMain.nkServer.dispatchCommand(LobbyManageMain.consoleObjects, cmd.replace("%player%", player.getName()));
+                        multCmd(LobbyManageMain.consoleObjects, cmd.replace("%player%", player.getName()));
                     }
                 }
             }
@@ -78,15 +78,19 @@ public class Listeners implements Listener {
         Player player = event.getPlayer();
         if (DoubleJump && player.getLevel().equals(getLobbyLevel()) && !player.isCreative()) {
             int tick = nkServer.getTick();
-            if (tick - JJumpCoolTick.getOrDefault(player, 0) <= 20) {
+            if (tick - JJumpCoolTick.getOrDefault(player, 0) <= 10) {
                 event.setCancelled(true);
-                player.setAllowFlight(false);
+                cancelFlight(player);
                 return;
             }
             JJumpCoolTick.put(player, tick);
             event.setCancelled(true);
-            player.setAllowFlight(false);
             player.setMotion(player.getLocation().getDirectionVector().multiply(2).add(0.0, 0.8, 0.0));
+            cancelFlight(player);
+        }
+        if (DoubleJump && !player.getLevel().equals(getLobbyLevel())) {
+            event.setCancelled(true);
+            cancelFlight(player);
         }
     }
 
@@ -136,7 +140,7 @@ public class Listeners implements Listener {
                     player.teleport(getLobbySpawn());
                 }
             }
-            if (DoubleJump && !player.isCreative() && getLevel().equals(getLobbyLevel()) && player.isOnGround() && !player.getAllowFlight()) {
+            if (DoubleJump && !player.isCreative() && player.getLevel().equals(getLobbyLevel()) && player.isOnGround() && !player.getAllowFlight()) {
                 player.setAllowFlight(true);
             }
             String id = String.valueOf(event.getTo().add(0, -1, 0).getLevelBlock().getId());

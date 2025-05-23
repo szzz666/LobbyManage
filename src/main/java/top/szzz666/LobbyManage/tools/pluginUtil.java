@@ -1,5 +1,6 @@
 package top.szzz666.LobbyManage.tools;
 
+import cn.nukkit.AdventureSettings;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.item.Item;
@@ -24,6 +25,12 @@ import static top.szzz666.LobbyManage.config.LmConfig.ItemCmdStr;
 
 
 public class pluginUtil {
+    public static void cancelFlight(Player player) {
+        AdventureSettings settings = player.getAdventureSettings();
+        settings.set(AdventureSettings.Type.ALLOW_FLIGHT, false);
+        settings.set(AdventureSettings.Type.FLYING, false);
+        player.setAdventureSettings(settings);
+    }
     public static void multCmd(CommandSender sender, String command) {
         nkServer.getCommandMap().dispatch(sender, command);
     }
